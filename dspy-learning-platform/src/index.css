@@ -1,0 +1,16 @@
+/* Tailwind base layers */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Global typography overrides */
+body {
+  @apply font-sans antialiased;
+}
+
+.btn-primary {
+  @apply inline-flex items-center justify-center px-4 py-2 rounded bg-primary-600 text-white hover:bg-primary-700 transition;
+}
+.btn-outline {
+  @apply inline-flex items-center justify-center px-4 py-2 rounded border border-primary-600 text-primary-700 hover:bg-primary-50 transition;
+}
