@@ -210,5 +210,5 @@ __marimo__/
 
 
 # NPM
-node_modules/
+dspy-learning-platform/node_modules
 package-lock.json
