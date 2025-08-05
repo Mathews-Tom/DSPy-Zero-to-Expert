@@ -405,7 +405,7 @@ TAVILY_API_KEY=your_tavily_api_key_here
 
 ## Repository Folder Structure
 
-```
+```bash
 DSPy-Zero-to-Expert/
 ├── README.md
 ├── pyproject.toml
