@@ -22,8 +22,6 @@ classifiers = [
 ]
 
 dependencies = [
-    # Core DSPy and Marimo
-    "dspy-ai>=2.5.0",
     "marimo>=0.9.0",
     # LLM Providers
     "openai>=1.0.0",
@@ -66,6 +64,8 @@ dependencies = [
     "rich>=13.0.0",
     "typer>=0.9.0",
     "tqdm>=4.65.0",
+    "litellm>=1.74.15.post1",
+    "dspy>=2.6.27",
 ]
 
 [project.optional-dependencies]

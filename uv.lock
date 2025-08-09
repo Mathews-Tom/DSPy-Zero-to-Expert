@@ -1104,18 +1104,6 @@ wheels = [
 ]
 
 [[package]]
-name = "dspy-ai"
-version = "2.6.27"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "dspy" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/d8/86/bd275fd5e779749ec65ba8f40893b9f2501b4eb1f4be78615895b63af2c6/dspy_ai-2.6.27.tar.gz", hash = "sha256:93d363e2ceb3745554133c8849e3eea356653707a6760eadfb9533d7d9e5f330", size = 1112 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/fb/3e/47ae39dca48913b755c8ae4ffabd9c9ecc92365065a4461f2bdc3a81e603/dspy_ai-2.6.27-py3-none-any.whl", hash = "sha256:e7d4d3328dd05098efbedbd72d1c324a2317e4693638eb8755926c9ff0f64861", size = 1107 },
-]
-
-[[package]]
 name = "dspy-zero-to-expert"
 version = "0.1.0"
 source = { editable = "." }
@@ -1124,13 +1112,14 @@ dependencies = [
     { name = "chromadb" },
     { name = "cohere" },
     { name = "datasets" },
-    { name = "dspy-ai" },
+    { name = "dspy" },
     { name = "faiss-cpu" },
     { name = "ipykernel" },
     { name = "ipython" },
     { name = "jupyter" },
     { name = "jupytext" },
     { name = "langfuse" },
+    { name = "litellm" },
     { name = "marimo" },
     { name = "matplotlib" },
     { name = "mlflow" },
@@ -1192,7 +1181,7 @@ requires-dist = [
     { name = "chromadb", specifier = ">=0.4.0" },
     { name = "cohere", specifier = ">=4.0.0" },
     { name = "datasets", specifier = ">=2.14.0" },
-    { name = "dspy-ai", specifier = ">=2.5.0" },
+    { name = "dspy", specifier = ">=2.6.27" },
     { name = "faiss-cpu", specifier = ">=1.7.4" },
     { name = "huggingface-hub", marker = "extra == 'all'", specifier = ">=0.17.0" },
     { name = "ipykernel", specifier = ">=6.25.0" },
@@ -1200,6 +1189,7 @@ requires-dist = [
     { name = "jupyter", specifier = ">=1.0.0" },
     { name = "jupytext", specifier = ">=1.15.0" },
     { name = "langfuse", specifier = ">=2.0.0" },
+    { name = "litellm", specifier = ">=1.74.15.post1" },
     { name = "marimo", specifier = ">=0.9.0" },
     { name = "matplotlib", specifier = ">=3.7.0" },
     { name = "memory-profiler", marker = "extra == 'dev'", specifier = ">=0.61.0" },
