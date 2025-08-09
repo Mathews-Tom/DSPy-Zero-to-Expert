@@ -1,3 +1,6 @@
+# pylint: disable=import-error,import-outside-toplevel,reimported
+# cSpell:ignore dspy marimo
+
 import marimo
 
 __generated_with = "0.14.16"
@@ -5,126 +8,119 @@ app = marimo.App(width="medium")
 
 
 @app.cell
-def __():
+def _():
     import sys
     import time
+    from inspect import cleandoc
     from pathlib import Path
-    from typing import Any, Dict, List, Optional
 
     import dspy
     import marimo as mo
+    from marimo import output
+
+    from common import get_config, setup_dspy_environment
 
     # Add project root to path
     project_root = Path(__file__).parent.parent
     sys.path.insert(0, str(project_root))
 
-    from common import (
-        DSPyParameterPanel,
-        DSPyResultViewer,
-        get_config,
-        setup_dspy_environment,
-    )
-
-    return (
-        Any,
-        DSPyParameterPanel,
-        DSPyResultViewer,
-        Dict,
-        List,
-        Optional,
-        Path,
-        dspy,
-        get_config,
-        mo,
-        project_root,
-        setup_dspy_environment,
-        sys,
-        time,
-    )
+    return cleandoc, dspy, get_config, mo, output, setup_dspy_environment, time
 
 
 @app.cell
-def __(mo):
-    mo.md(
-        r"""
-        # 🧠 Multi-Step Reasoning Pipeline
-        
-        **Duration:** 90-120 minutes  
-        **Prerequisites:** Completed ReAct and Tool Integration
-        
-        ## 🎯 Learning Objectives
-        
-        By the end of this module, you will:
-        - ✅ Build complex multi-step reasoning pipelines
-        - ✅ Implement multi-hop question answering systems
-        - ✅ Create reasoning step tracking and visualization
-        - ✅ Debug complex reasoning workflows
-        - ✅ Optimize reasoning chains for performance and accuracy
-        
-        ## 🧩 What is Multi-Step Reasoning?
-        
-        Multi-step reasoning involves:
-        - **Problem Decomposition** - Breaking complex problems into manageable steps
-        - **Sequential Processing** - Executing steps in logical order
-        - **Context Maintenance** - Preserving information across steps
-        - **Dynamic Planning** - Adapting the approach based on intermediate results
-        - **Result Synthesis** - Combining step outputs into final answers
-        
-        ## 🏗️ Pipeline Architecture
-        
-        Our multi-step reasoning system includes:
-        1. **Step Planner** - Decomposes problems into logical steps
-        2. **Step Executor** - Executes individual reasoning steps
-        3. **Context Manager** - Maintains state across steps
-        4. **Progress Tracker** - Monitors and visualizes progress
-        5. **Result Synthesizer** - Combines outputs into final answers
-        
-        Let's build sophisticated reasoning pipelines!
-        """
+def _(cleandoc, mo, output):
+    cell1_out = mo.md(
+        cleandoc(
+            r"""
+            # 🧠 Multi-Step Reasoning Pipeline
+
+            **Duration:** 90-120 minutes  
+            **Prerequisites:** Completed ReAct and Tool Integration
+
+            ## 🎯 Learning Objectives
+
+            By the end of this module, you will:  
+            - ✅ Build complex multi-step reasoning pipelines  
+            - ✅ Implement multi-hop question answering systems  
+            - ✅ Create reasoning step tracking and visualization  
+            - ✅ Debug complex reasoning workflows  
+            - ✅ Optimize reasoning chains for performance and accuracy  
+
+            ## 🧩 What is Multi-Step Reasoning?
+
+            Multi-step reasoning involves:  
+            - **Problem Decomposition** - Breaking complex problems into manageable steps  
+            - **Sequential Processing** - Executing steps in logical order  
+            - **Context Maintenance** - Preserving information across steps  
+            - **Dynamic Planning** - Adapting the approach based on intermediate results  
+            - **Result Synthesis** - Combining step outputs into final answers  
+
+            ## 🏗️ Pipeline Architecture
+
+            Our multi-step reasoning system includes:  
+            1. **Step Planner** - Decomposes problems into logical steps  
+            2. **Step Executor** - Executes individual reasoning steps  
+            3. **Context Manager** - Maintains state across steps  
+            4. **Progress Tracker** - Monitors and visualizes progress  
+            5. **Result Synthesizer** - Combines outputs into final answers  
+
+            Let's build sophisticated reasoning pipelines!
+            """
+        )
     )
+
+    output.replace(cell1_out)
     return
 
 
 @app.cell
-def __(get_config, mo, setup_dspy_environment):
+def _(cleandoc, get_config, mo, output, setup_dspy_environment):
     # Setup DSPy environment
     config = get_config()
     available_providers = config.get_available_llm_providers()
 
     if available_providers:
         setup_dspy_environment()
-        mo.md(
-            f"""
-        ## ✅ Multi-Step Reasoning Environment Ready
-        
-        **Configuration:**
-        - Provider: **{config.default_llm_provider}**
-        - Model: **{config.default_model}**
-        - Advanced reasoning enabled!
-        
-        Ready to build complex reasoning systems!
-        """
+        cell2_out = mo.md(
+            cleandoc(
+                f"""
+                ## ✅ Multi-Step Reasoning Environment Ready
+
+                **Configuration:**
+                - Provider: **{config.default_provider}**
+                - Model: **{config.default_model}**
+                - Advanced reasoning enabled!
+
+                Ready to build complex reasoning systems!
+                """
+            )
         )
     else:
-        mo.md(
-            """
-        ## ⚠️ Setup Required
-        
-        Please complete Module 00 setup first to configure your API keys.
-        """
+        cell2_out = mo.md(
+            cleandoc(
+                """
+                ## ⚠️ Setup Required
+
+                Please complete Module 00 setup first to configure your API keys.
+                """
+            )
         )
-    return available_providers, config
+
+    output.replace(cell2_out)
+    return (available_providers,)
 
 
 @app.cell
-def __(available_providers, dspy, mo):
+def _(available_providers, cleandoc, dspy, mo, output):
     if available_providers:
-        mo.md(
-            """
-        ## 🧩 Step 1: Step Planning Architecture
-        
-        Let's start by building a system that can decompose complex problems into steps:
-        """
+        cell3_desc = mo.md(
+            cleandoc(
+                """
+                ## 🧩 Step 1: Step Planning Architecture
+
+                Let's start by building a system that can decompose complex problems into steps:
+                """
+            )
         )
 
         # Step Planner Signature
@@ -194,44 +190,46 @@ def __(available_providers, dspy, mo):
         step_executor = dspy.ChainOfThought(StepExecutorSignature)
         result_synthesizer = dspy.ChainOfThought(ResultSynthesizerSignature)
 
-        mo.md(
-            """
-        ### 🧩 Multi-Step Reasoning Components Created
-        
-        **Components:**
-        - **Step Planner** - Decomposes problems into logical steps
-        - **Step Executor** - Executes individual reasoning steps
-        - **Result Synthesizer** - Combines step outputs into final answers
-        
-        Each component uses ChainOfThought for detailed reasoning!
-        """
+        cell3_content = mo.md(
+            cleandoc(
+                """
+                ### 🧩 Multi-Step Reasoning Components Created
+
+                **Components:**  
+                - **Step Planner** - Decomposes problems into logical steps  
+                - **Step Executor** - Executes individual reasoning steps  
+                - **Result Synthesizer** - Combines step outputs into final answers  
+
+                Each component uses ChainOfThought for detailed reasoning!
+                """
+            )
         )
     else:
+        cell3_desc = mo.md("")
         StepPlannerSignature = None
         StepExecutorSignature = None
         ResultSynthesizerSignature = None
         step_planner = None
         step_executor = None
         result_synthesizer = None
-    return (
-        ResultSynthesizerSignature,
-        StepExecutorSignature,
-        StepPlannerSignature,
-        result_synthesizer,
-        step_executor,
-        step_planner,
-    )
+        cell3_content = mo.md("")
+
+    cell3_out = mo.vstack([cell3_desc, cell3_content])
+    output.replace(cell3_out)
+    return result_synthesizer, step_executor, step_planner
 
 
 @app.cell
-def __(available_providers, mo):
+def _(available_providers, cleandoc, mo, output, time):
     if available_providers:
-        mo.md(
-            """
-        ## 🔄 Step 2: Multi-Step Pipeline Implementation
-        
-        Now let's build a complete pipeline that orchestrates the reasoning process:
-        """
+        cell4_desc = mo.md(
+            cleandoc(
+                """
+                ## 🔄 Step 2: Multi-Step Pipeline Implementation
+
+                Now let's build a complete pipeline that orchestrates the reasoning process:
+                """
+            )
         )
 
         # Multi-Step Reasoning Pipeline
@@ -339,7 +337,7 @@ def __(available_providers, mo):
                         "execution_log": self.execution_log,
                     }
 
-            def _parse_steps(self, step_plan: str) -> List[str]:
+            def _parse_steps(self, step_plan: str) -> list[str]:
                 """Parse step plan into individual steps."""
                 steps = []
                 lines = step_plan.split("\n")
@@ -379,30 +377,38 @@ def __(available_providers, mo):
                     {"timestamp": time.time(), "phase": phase, "message": message}
                 )
 
-        mo.md(
-            """
-        ### 🔄 Multi-Step Pipeline Created
-        
-        **Pipeline Features:**
-        - **Problem Decomposition** - Automatic step planning
-        - **Sequential Execution** - Step-by-step processing
-        - **Context Preservation** - Information flow between steps
-        - **Progress Logging** - Detailed execution tracking
-        - **Error Handling** - Graceful failure management
-        
-        The pipeline is ready to handle complex reasoning tasks!
-        """
+        cell4_content = mo.md(
+            cleandoc(
+                """
+                ### 🔄 Multi-Step Pipeline Created
+
+                **Pipeline Features:**  
+                - **Problem Decomposition** - Automatic step planning  
+                - **Sequential Execution** - Step-by-step processing  
+                - **Context Preservation** - Information flow between steps  
+                - **Progress Logging** - Detailed execution tracking  
+                - **Error Handling** - Graceful failure management  
+
+                The pipeline is ready to handle complex reasoning tasks!
+                """
+            )
         )
     else:
+        cell4_desc = mo.md("")
         MultiStepReasoningPipeline = None
+        cell4_content = mo.md("")
+
+    cell4_out = mo.vstack([cell4_desc, cell4_content])
+    output.replace(cell4_out)
     return (MultiStepReasoningPipeline,)
 
 
 @app.cell
-def __(
+def _(
     MultiStepReasoningPipeline,
     available_providers,
     mo,
+    output,
     result_synthesizer,
     step_executor,
     step_planner,
@@ -439,9 +445,9 @@ def __(
             value=complex_reasoning_problems[0]["problem"][:80] + "...",
         )
 
-        run_pipeline_demo = mo.ui.button(label="🧠 Run Multi-Step Reasoning")
+        run_pipeline_demo = mo.ui.run_button(label="🧠 Run Multi-Step Reasoning")
 
-        mo.vstack(
+        cell5_out = mo.vstack(
             [
                 mo.md("### 🧩 Complex Reasoning Problems"),
                 mo.md(
@@ -456,6 +462,9 @@ def __(
         complex_reasoning_problems = None
         problem_selector = None
         run_pipeline_demo = None
+        cell5_out = mo.md("")
+
+    output.replace(cell5_out)
     return (
         complex_reasoning_problems,
         problem_selector,
@@ -465,10 +474,12 @@ def __(
 
 
 @app.cell
-def __(
+def _(
     available_providers,
+    cleandoc,
     complex_reasoning_problems,
     mo,
+    output,
     problem_selector,
     reasoning_pipeline,
     run_pipeline_demo,
@@ -503,13 +514,15 @@ def __(
                     step_displays = []
                     for step in step_results:
                         step_displays.append(
-                            f"""
-**Step {step['step_number']}: {step['description']}**
-- **Reasoning:** {step['reasoning']}
-- **Result:** {step['result']}
-- **Confidence:** {step['confidence']}
-- **Next Step Guidance:** {step['guidance']}
-"""
+                            cleandoc(
+                                f"""
+                                **Step {step['step_number']}: {step['description']}**
+                                - **Reasoning:** {step['reasoning']}
+                                - **Result:** {step['result']}
+                                - **Confidence:** {step['confidence']}
+                                - **Next Step Guidance:** {step['guidance']}
+                                """
+                            )
                         )
 
                     # Format execution log
@@ -522,7 +535,7 @@ def __(
                             f"**{timestamp} - {log_entry['phase']}:** {log_entry['message']}"
                         )
 
-                    mo.vstack(
+                    cell6_out = mo.vstack(
                         [
                             mo.md("## 🧠 Multi-Step Reasoning Results"),
                             mo.md(f"**Problem:** {selected_problem_data['problem']}"),
@@ -555,7 +568,7 @@ def __(
                             mo.md(
                                 f"**Average Step Confidence:** {sum(float(s.get('confidence', '0.5')) for s in step_results) / len(step_results):.2f}"
                             ),
-                            mo.md(f"**Pipeline Success:** ✅ Yes"),
+                            mo.md("**Pipeline Success:** ✅ Yes"),
                             mo.md("### 📝 Execution Log"),
                             mo.md(
                                 "\n".join(log_displays[:10])
@@ -563,50 +576,43 @@ def __(
                         ]
                     )
                 else:
-                    mo.md(
-                        f"""
-                    ## ❌ Pipeline Execution Failed
-                    
-                    **Error:** {pipeline_result['error']}
-                    
-                    **Execution Log:**
-                    {chr(10).join([f"- {entry['phase']}: {entry['message']}" for entry in pipeline_result['execution_log']])}
-                    """
+                    cell6_out = mo.md(
+                        cleandoc(
+                            f"""
+                            ## ❌ Pipeline Execution Failed
+
+                            **Error:** {pipeline_result['error']}
+
+                            **Execution Log:**
+                            {chr(10).join([f"- {entry['phase']}: {entry['message']}" for entry in pipeline_result['execution_log']])}
+                            """
+                        )
                     )
             else:
                 mo.md("❌ Problem not found")
 
         except Exception as e:
-            mo.md(f"❌ **Pipeline Demo Error:** {str(e)}")
+            cell6_out = mo.md(f"❌ **Pipeline Demo Error:** {str(e)}")
     else:
-        mo.md(
+        cell6_out = mo.md(
             "*Select a problem and click 'Run Multi-Step Reasoning' to see the pipeline in action*"
         )
-    return (
-        execution_time,
-        final_result,
-        log_displays,
-        log_entry,
-        pipeline_result,
-        plan,
-        selected_problem_data,
-        start_time,
-        step,
-        step_displays,
-        step_results,
-        timestamp,
-    )
+
+    output.replace(cell6_out)
+    return (pipeline_result,)
 
 
 @app.cell
-def __(available_providers, dspy, mo):
+def _(available_providers, cleandoc, dspy, mo, output):
     if available_providers:
-        mo.md(
-            """
-        ## 🔍 Step 3: Multi-Hop Question Answering
-        
-        Let's build a specialized system for multi-hop question answering:
-        """
+        cell7_desc = mo.md(
+            cleandoc(
+                """
+                ## 🔍 Step 3: Multi-Hop Question Answering
+
+                Let's build a specialized system for multi-hop question answering:
+                """
+            )
         )
 
         # Multi-Hop QA Signature
@@ -638,25 +644,37 @@ def __(available_providers, dspy, mo):
         # Create multi-hop QA module
         multihop_qa = dspy.ChainOfThought(MultiHopQASignature)
 
-        mo.md(
-            """
-        ### 🔍 Multi-Hop QA System Created
-        
-        This system can:
-        - **Decompose Questions** - Break complex questions into sub-questions
-        - **Sequential Reasoning** - Answer sub-questions in logical order
-        - **Information Integration** - Combine answers across reasoning hops
-        - **Chain Visualization** - Show complete reasoning process
-        """
+        cell7_content = mo.md(
+            cleandoc(
+                """
+                ### 🔍 Multi-Hop QA System Created
+
+                This system can:
+                - **Decompose Questions** - Break complex questions into sub-questions
+                - **Sequential Reasoning** - Answer sub-questions in logical order
+                - **Information Integration** - Combine answers across reasoning hops
+                - **Chain Visualization** - Show complete reasoning process
+                """
+            )
         )
     else:
+        cell7_desc = mo.md("")
         MultiHopQASignature = None
         multihop_qa = None
-    return MultiHopQASignature, multihop_qa
+        cell7_content = mo.md("")
+
+    cell7_out = mo.vstack(
+        [
+            cell7_desc,
+            cell7_content,
+        ]
+    )
+    output.replace(cell7_out)
+    return (multihop_qa,)
 
 
 @app.cell
-def __(available_providers, mo):
+def _(available_providers, mo, output):
     if available_providers:
         # Multi-hop questions
         multihop_questions = [
@@ -684,9 +702,9 @@ def __(available_providers, mo):
             value=multihop_questions[0]["question"],
         )
 
-        run_multihop_demo = mo.ui.button(label="🔍 Run Multi-Hop QA")
+        run_multihop_demo = mo.ui.run_button(label="🔍 Run Multi-Hop QA")
 
-        mo.vstack(
+        cell8_out = mo.vstack(
             [
                 mo.md("### 🔍 Multi-Hop Question Answering"),
                 mo.md("Select a question that requires multiple reasoning steps:"),
@@ -698,16 +716,21 @@ def __(available_providers, mo):
         multihop_questions = None
         multihop_selector = None
         run_multihop_demo = None
+        cell8_out = mo.md("")
+
+    output.replace(cell8_out)
     return multihop_questions, multihop_selector, run_multihop_demo
 
 
 @app.cell
-def __(
+def _(
     available_providers,
+    cleandoc,
     mo,
     multihop_qa,
     multihop_questions,
     multihop_selector,
+    output,
     run_multihop_demo,
 ):
     if available_providers and run_multihop_demo.value and multihop_qa:
@@ -726,7 +749,7 @@ def __(
                     context_sources=selected_qa["context"],
                 )
 
-                mo.vstack(
+                cell9_out = mo.vstack(
                     [
                         mo.md("## 🔍 Multi-Hop QA Results"),
                         mo.md(f"**Original Question:** {selected_qa['question']}"),
@@ -756,41 +779,47 @@ def __(
                             f"**Complete Reasoning Chain:** {qa_result.reasoning_chain}"
                         ),
                         mo.md(
-                            """
-                    ### 💡 Multi-Hop Analysis
-                    
-                    The system successfully:
-                    1. **Decomposed** the complex question into sub-questions
-                    2. **Sequenced** the reasoning hops logically
-                    3. **Integrated** information across multiple steps
-                    4. **Synthesized** a comprehensive final answer
-                    
-                    This demonstrates the power of structured multi-hop reasoning!
-                    """
+                            cleandoc(
+                                """
+                                ### 💡 Multi-Hop Analysis
+
+                                The system successfully:
+                                1. **Decomposed** the complex question into sub-questions
+                                2. **Sequenced** the reasoning hops logically
+                                3. **Integrated** information across multiple steps
+                                4. **Synthesized** a comprehensive final answer
+
+                                This demonstrates the power of structured multi-hop reasoning!
+                                """
+                            )
                         ),
                     ]
                 )
             else:
-                mo.md("❌ Question not found")
+                cell9_out = mo.md("❌ Question not found")
 
         except Exception as e:
-            mo.md(f"❌ **Multi-Hop QA Error:** {str(e)}")
+            cell9_out = mo.md(f"❌ **Multi-Hop QA Error:** {str(e)}")
     else:
-        mo.md(
+        cell9_out = mo.md(
             "*Select a question and click 'Run Multi-Hop QA' to see multi-hop reasoning in action*"
         )
-    return qa_result, selected_qa
+
+    output.replace(cell9_out)
+    return
 
 
 @app.cell
-def __(available_providers, mo):
+def _(available_providers, cleandoc, mo, output, time):
     if available_providers:
-        mo.md(
-            """
-        ## 📊 Step 4: Reasoning Visualization & Debugging
-        
-        Let's build tools to visualize and debug complex reasoning processes:
-        """
+        cell10_desc = mo.md(
+            cleandoc(
+                """
+                ## 📊 Step 4: Reasoning Visualization & Debugging
+
+                Let's build tools to visualize and debug complex reasoning processes:
+                """
+            )
         )
 
         # Reasoning Visualizer
@@ -816,36 +845,42 @@ def __(available_providers, mo):
                 # Problem Analysis
                 plan = pipeline_result["plan"]
                 visualization.append(
-                    f"""
-**🎯 Problem Analysis**
-- Type: {plan.problem_type}
-- Complexity: {plan.complexity_level}
-- Estimated Steps: {plan.estimated_steps}
-"""
+                    cleandoc(
+                        f"""
+                        **🎯 Problem Analysis**
+                        - Type: {plan.problem_type}
+                        - Complexity: {plan.complexity_level}
+                        - Estimated Steps: {plan.estimated_steps}
+                        """
+                    )
                 )
 
                 # Step Flow
                 step_results = pipeline_result["step_results"]
                 visualization.append("**🔄 Reasoning Flow**")
 
-                for i, step in enumerate(step_results):
+                for _, step in enumerate(step_results):
                     confidence_bar = "🟩" * int(float(step.get("confidence", 0.5)) * 10)
                     visualization.append(
-                        f"""
-Step {step['step_number']}: {step['description']}
-Confidence: {confidence_bar} ({step.get('confidence', 'N/A')})
-Result: {step['result'][:100]}{'...' if len(step['result']) > 100 else ''}
-"""
+                        cleandoc(
+                            f"""
+                            Step {step['step_number']}: {step['description']}
+                            Confidence: {confidence_bar} ({step.get('confidence', 'N/A')})
+                            Result: {step['result'][:100]}{'...' if len(step['result']) > 100 else ''}
+                            """
+                        )
                     )
 
                 # Final Synthesis
                 final_result = pipeline_result["final_result"]
                 visualization.append(
-                    f"""
-**🎯 Final Synthesis**
-Answer: {final_result.final_answer[:200]}{'...' if len(final_result.final_answer) > 200 else ''}
-Confidence: {final_result.confidence_assessment}
-"""
+                    cleandoc(
+                        f"""
+                        **🎯 Final Synthesis**
+                        Answer: {final_result.final_answer[:200]}{'...' if len(final_result.final_answer) > 200 else ''}
+                        Confidence: {final_result.confidence_assessment}
+                        """
+                    )
                 )
 
                 return "\n".join(visualization)
@@ -918,27 +953,41 @@ Confidence: {final_result.confidence_assessment}
         # Create visualizer
         reasoning_visualizer = ReasoningVisualizer()
 
-        mo.md(
-            """
-        ### 📊 Reasoning Visualizer Created
-        
-        **Visualization Features:**
-        - **Pipeline Flow** - Visual representation of reasoning steps
-        - **Confidence Tracking** - Monitor confidence across steps
-        - **Quality Analysis** - Assess reasoning quality metrics
-        - **Improvement Recommendations** - Suggestions for optimization
-        
-        The visualizer helps debug and optimize reasoning processes!
-        """
+        cell10_content = mo.md(
+            cleandoc(
+                """
+                ### 📊 Reasoning Visualizer Created
+
+                **Visualization Features:**  
+                - **Pipeline Flow** - Visual representation of reasoning steps  
+                - **Confidence Tracking** - Monitor confidence across steps  
+                - **Quality Analysis** - Assess reasoning quality metrics  
+                - **Improvement Recommendations** - Suggestions for optimization  
+
+                The visualizer helps debug and optimize reasoning processes!
+                """
+            )
         )
     else:
+        cell10_desc = mo.md("")
         ReasoningVisualizer = None
         reasoning_visualizer = None
-    return ReasoningVisualizer, reasoning_visualizer
+        cell10_content = mo.md("")
+
+    cell10_out = mo.vstack([cell10_desc, cell10_content])
+    output.replace(cell10_out)
+    return (reasoning_visualizer,)
 
 
 @app.cell
-def __(available_providers, mo, pipeline_result, reasoning_visualizer):
+def _(
+    available_providers,
+    cleandoc,
+    mo,
+    output,
+    pipeline_result,
+    reasoning_visualizer,
+):
     if available_providers and reasoning_visualizer and "pipeline_result" in locals():
         try:
             # Visualize the last pipeline execution
@@ -947,135 +996,146 @@ def __(available_providers, mo, pipeline_result, reasoning_visualizer):
                 pipeline_result
             )
 
-            mo.vstack(
+            cell11_out = mo.vstack(
                 [
                     mo.md("## 📊 Reasoning Process Visualization"),
                     mo.md(visualization),
                     mo.md("### 📈 Quality Analysis"),
                     mo.md(
-                        f"""
-                **Performance Metrics:**
-                - Total Steps: {quality_analysis['total_steps']}
-                - Average Confidence: {quality_analysis['avg_confidence']:.2f}
-                - Minimum Confidence: {quality_analysis['min_confidence']:.2f}
-                - Reasoning Quality: {quality_analysis['avg_reasoning_quality']:.2f}
-                - Consistency Score: {quality_analysis['consistency_score']:.2f}
-                
-                **Recommendations:**
-                {chr(10).join([f"- {rec}" for rec in quality_analysis['recommendations']])}
-                """
+                        cleandoc(
+                            f"""
+                            **Performance Metrics:**  
+                            - Total Steps: {quality_analysis['total_steps']}  
+                            - Average Confidence: {quality_analysis['avg_confidence']:.2f}  
+                            - Minimum Confidence: {quality_analysis['min_confidence']:.2f}  
+                            - Reasoning Quality: {quality_analysis['avg_reasoning_quality']:.2f}  
+                            - Consistency Score: {quality_analysis['consistency_score']:.2f}  
+
+                            **Recommendations:**  
+                            {'\n'.join([f"- {rec}" for rec in quality_analysis['recommendations']])}  
+                            """
+                        )
                     ),
                 ]
             )
 
         except Exception as e:
-            mo.md(f"❌ **Visualization Error:** {str(e)}")
+            cell11_out = mo.md(f"❌ **Visualization Error:** {str(e)}")
     else:
-        mo.md("*Run a multi-step reasoning pipeline first to see visualization*")
-    return quality_analysis, visualization
+        cell11_out = mo.md(
+            "*Run a multi-step reasoning pipeline first to see visualization*"
+        )
+
+    output.replace(cell11_out)
+    return
 
 
 @app.cell
-def __(available_providers, mo):
-    if available_providers:
-        mo.md(
+def _(available_providers, cleandoc, mo, output):
+    cell12_out = mo.md(
+        cleandoc(
             """
-        ## 🎓 Multi-Step Reasoning Module Complete!
-        
-        ### 🏆 What You've Mastered
-        
-        ✅ **Multi-Step Pipeline Architecture** - Complete reasoning pipeline system
-        ✅ **Problem Decomposition** - Breaking complex problems into manageable steps
-        ✅ **Sequential Execution** - Step-by-step reasoning with context preservation
-        ✅ **Multi-Hop Question Answering** - Complex question decomposition and answering
-        ✅ **Reasoning Visualization** - Debugging and optimization tools
-        
-        ### 🧠 Key Components Built
-        
-        1. **Step Planner**
-           - Problem type classification
-           - Complexity assessment
-           - Step decomposition and planning
-        
-        2. **Step Executor**
-           - Individual step reasoning
-           - Context-aware execution
-           - Confidence tracking
-        
-        3. **Result Synthesizer**
-           - Multi-step result integration
-           - Final answer generation
-           - Alternative approach consideration
-        
-        4. **Multi-Hop QA System**
-           - Complex question decomposition
-           - Sequential sub-question answering
-           - Information integration across hops
-        
-        5. **Reasoning Visualizer**
-           - Pipeline execution visualization
-           - Quality analysis and metrics
-           - Improvement recommendations
-        
-        ### 🎯 Skills Developed
-        
-        - **System Architecture** - Designing complex reasoning pipelines
-        - **Problem Decomposition** - Breaking down complex problems systematically
-        - **Context Management** - Maintaining information flow across steps
-        - **Quality Assessment** - Evaluating reasoning process effectiveness
-        - **Debugging Techniques** - Identifying and fixing reasoning issues
-        
-        ### 🚀 Ready for Advanced Debugging?
-        
-        You now understand sophisticated reasoning patterns! Time to master debugging techniques:
-        
-        **Next Module:**
-        ```bash
-        uv run marimo run 02-advanced-modules/debugging_dashboard.py
-        ```
-        
-        **Coming Up:**
-        - Interactive debugging tools for complex agents
-        - Step-by-step execution visualization
-        - Performance profiling and optimization
-        - Advanced error diagnosis and resolution
-        
-        ### 💡 Practice Challenges
-        
-        Before moving on, try building reasoning systems for:
-        
-        1. **Research Analysis**
-           - Multi-source information synthesis
-           - Evidence evaluation and ranking
-           - Conclusion generation with uncertainty
-        
-        2. **Strategic Planning**
-           - Goal decomposition and prioritization
-           - Resource allocation optimization
-           - Risk assessment and mitigation
-        
-        3. **Technical Troubleshooting**
-           - Problem diagnosis methodology
-           - Solution evaluation and testing
-           - Implementation planning
-        
-        4. **Creative Problem Solving**
-           - Ideation and brainstorming
-           - Concept evaluation and refinement
-           - Implementation feasibility analysis
-        
-        ### 🏭 Production Considerations
-        
-        When deploying multi-step reasoning systems:
-        - **Performance**: Optimize step execution for speed and accuracy
-        - **Reliability**: Implement robust error handling and recovery
-        - **Scalability**: Design for parallel step execution where possible
-        - **Monitoring**: Track reasoning quality and performance metrics
-        - **Maintenance**: Plan for reasoning pattern updates and improvements
-        
-        Master these multi-step reasoning patterns and you can build agents that solve the most complex problems systematically!
-        """
+            ## 🎓 Multi-Step Reasoning Module Complete!
+
+            ### 🏆 What You've Mastered
+
+            ✅ **Multi-Step Pipeline Architecture** - Complete reasoning pipeline system  
+            ✅ **Problem Decomposition** - Breaking complex problems into manageable steps  
+            ✅ **Sequential Execution** - Step-by-step reasoning with context preservation  
+            ✅ **Multi-Hop Question Answering** - Complex question decomposition and answering  
+            ✅ **Reasoning Visualization** - Debugging and optimization tools  
+
+            ### 🧠 Key Components Built
+
+            1. **Step Planner**
+                - Problem type classification
+                - Complexity assessment
+                - Step decomposition and planning
+
+            2. **Step Executor**
+                - Individual step reasoning
+                - Context-aware execution
+                - Confidence tracking
+
+            3. **Result Synthesizer**
+                - Multi-step result integration
+                - Final answer generation
+                - Alternative approach consideration
+
+            4. **Multi-Hop QA System**
+                - Complex question decomposition
+                - Sequential sub-question answering
+                - Information integration across hops
+
+            5. **Reasoning Visualizer**
+                - Pipeline execution visualization
+                - Quality analysis and metrics
+                - Improvement recommendations
+
+            ### 🎯 Skills Developed
+
+            - **System Architecture** - Designing complex reasoning pipelines
+            - **Problem Decomposition** - Breaking down complex problems systematically
+            - **Context Management** - Maintaining information flow across steps
+            - **Quality Assessment** - Evaluating reasoning process effectiveness
+            - **Debugging Techniques** - Identifying and fixing reasoning issues
+
+            ### 🚀 Ready for Advanced Debugging?
+
+            You now understand sophisticated reasoning patterns! Time to master debugging techniques:
+
+            **Next Module:**
+            ```bash
+            uv run marimo run 02-advanced-modules/debugging_dashboard.py
+            ```
+
+            **Coming Up:**
+            - Interactive debugging tools for complex agents
+            - Step-by-step execution visualization
+            - Performance profiling and optimization
+            - Advanced error diagnosis and resolution
+
+            ### 💡 Practice Challenges
+
+            Before moving on, try building reasoning systems for:
+
+            1. **Research Analysis**
+                - Multi-source information synthesis
+                - Evidence evaluation and ranking
+                - Conclusion generation with uncertainty
+
+            2. **Strategic Planning**
+                - Goal decomposition and prioritization
+                - Resource allocation optimization
+                - Risk assessment and mitigation
+
+            3. **Technical Troubleshooting**
+                - Problem diagnosis methodology
+                - Solution evaluation and testing
+                - Implementation planning
+
+            4. **Creative Problem Solving**
+                - Ideation and brainstorming
+                - Concept evaluation and refinement
+                - Implementation feasibility analysis
+
+            ### 🏭 Production Considerations
+
+            When deploying multi-step reasoning systems:  
+            - **Performance**: Optimize step execution for speed and accuracy  
+            - **Reliability**: Implement robust error handling and recovery  
+            - **Scalability**: Design for parallel step execution where possible  
+            - **Monitoring**: Track reasoning quality and performance metrics  
+            - **Maintenance**: Plan for reasoning pattern updates and improvements  
+
+            Master these multi-step reasoning patterns and you can build agents that solve the most complex problems systematically!
+            """
         )
+        if available_providers
+        else ""
+    )
+
+    output.replace(cell12_out)
     return
 
 

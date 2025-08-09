@@ -1,3 +1,6 @@
+# pylint: disable=import-error,import-outside-toplevel,reimported
+# cSpell:ignore dspy marimo
+
 import marimo
 
 __generated_with = "0.14.16"
@@ -5,128 +8,131 @@ app = marimo.App(width="medium")
 
 
 @app.cell
-def __():
+def _():
     import json
     import sys
     import time
+    from inspect import cleandoc
     from pathlib import Path
-    from typing import Any, Dict, List, Optional
+    from typing import Any
 
     import dspy
     import marimo as mo
+    from marimo import output
+
+    from common import get_config, setup_dspy_environment
 
     # Add project root to path
     project_root = Path(__file__).parent.parent
     sys.path.insert(0, str(project_root))
 
-    from common import (
-        DSPyParameterPanel,
-        DSPyResultViewer,
-        get_config,
-        setup_dspy_environment,
-    )
-
     return (
         Any,
-        DSPyParameterPanel,
-        DSPyResultViewer,
-        Dict,
-        List,
-        Optional,
-        Path,
+        cleandoc,
         dspy,
         get_config,
         json,
         mo,
-        project_root,
+        output,
         setup_dspy_environment,
-        sys,
         time,
     )
 
 
 @app.cell
-def __(mo):
-    mo.md(
-        r"""
-        # 🐛 Advanced DSPy Debugging Dashboard
-        
-        **Duration:** 60-90 minutes  
-        **Prerequisites:** Completed ReAct, Tool Integration, and Multi-Step Reasoning
-        
-        ## 🎯 Learning Objectives
-        
-        By the end of this module, you will:
-        - ✅ Build comprehensive debugging tools for DSPy agents
-        - ✅ Create interactive debugging interfaces
-        - ✅ Implement step-by-step execution visualization
-        - ✅ Develop performance profiling and optimization tools
-        - ✅ Master advanced error diagnosis and resolution techniques
-        
-        ## 🔍 What is Advanced Debugging?
-        
-        Advanced debugging for DSPy agents involves:
-        - **Execution Tracing** - Track every step of agent reasoning
-        - **State Inspection** - Examine agent state at any point
-        - **Performance Profiling** - Identify bottlenecks and optimization opportunities
-        - **Error Analysis** - Diagnose and resolve complex failures
-        - **Interactive Debugging** - Real-time debugging and testing
-        
-        ## 🛠️ Dashboard Features
-        
-        Our debugging dashboard includes:
-        1. **Execution Tracer** - Real-time execution monitoring
-        2. **State Inspector** - Deep dive into agent state
-        3. **Performance Profiler** - Speed and resource analysis
-        4. **Error Analyzer** - Intelligent error diagnosis
-        5. **Interactive Debugger** - Live debugging interface
-        
-        Let's build professional debugging tools!
-        """
+def _(cleandoc, mo, output):
+    cell1_out = mo.md(
+        cleandoc(
+            r"""
+            # 🐛 Advanced DSPy Debugging Dashboard
+
+            **Duration:** 60-90 minutes  
+            **Prerequisites:** Completed ReAct, Tool Integration, and Multi-Step Reasoning  
+
+            ## 🎯 Learning Objectives
+
+            By the end of this module, you will:  
+            - ✅ Build comprehensive debugging tools for DSPy agents  
+            - ✅ Create interactive debugging interfaces  
+            - ✅ Implement step-by-step execution visualization  
+            - ✅ Develop performance profiling and optimization tools  
+            - ✅ Master advanced error diagnosis and resolution techniques  
+
+            ## 🔍 What is Advanced Debugging?
+
+            Advanced debugging for DSPy agents involves:  
+            - **Execution Tracing** - Track every step of agent reasoning  
+            - **State Inspection** - Examine agent state at any point  
+            - **Performance Profiling** - Identify bottlenecks and optimization opportunities  
+            - **Error Analysis** - Diagnose and resolve complex failures  
+            - **Interactive Debugging** - Real-time debugging and testing  
+
+            ## 🛠️ Dashboard Features
+
+            Our debugging dashboard includes:  
+            1. **Execution Tracer** - Real-time execution monitoring  
+            2. **State Inspector** - Deep dive into agent state  
+            3. **Performance Profiler** - Speed and resource analysis  
+            4. **Error Analyzer** - Intelligent error diagnosis  
+            5. **Interactive Debugger** - Live debugging interface  
+
+            Let's build professional debugging tools!
+            """
+        )
     )
+
+    output.replace(cell1_out)
     return
 
 
 @app.cell
-def __(get_config, mo, setup_dspy_environment):
+def _(cleandoc, get_config, mo, output, setup_dspy_environment):
     # Setup DSPy environment
     config = get_config()
     available_providers = config.get_available_llm_providers()
 
     if available_providers:
         setup_dspy_environment()
-        mo.md(
-            f"""
-        ## ✅ Debugging Dashboard Environment Ready
-        
-        **Configuration:**
-        - Provider: **{config.default_llm_provider}**
-        - Model: **{config.default_model}**
-        - Advanced debugging enabled!
-        
-        Ready to build comprehensive debugging tools!
-        """
+        cell2_out = mo.md(
+            cleandoc(
+                f"""
+                ## ✅ Debugging Dashboard Environment Ready
+
+                **Configuration:**  
+                - Provider: **{config.default_provider}**  
+                - Model: **{config.default_model}**  
+                - Advanced debugging enabled!  
+
+                Ready to build comprehensive debugging tools!
+                """
+            )
         )
     else:
-        mo.md(
-            """
-        ## ⚠️ Setup Required
-        
-        Please complete Module 00 setup first to configure your API keys.
-        """
+        cell2_out = mo.md(
+            cleandoc(
+                """
+                ## ⚠️ Setup Required
+
+                Please complete Module 00 setup first to configure your API keys.
+                """
+            )
         )
-    return available_providers, config
+
+    output.replace(cell2_out)
+    return (available_providers,)
 
 
 @app.cell
-def __(available_providers, mo):
+def _(Any, available_providers, cleandoc, mo, output, time):
     if available_providers:
-        mo.md(
-            """
-        ## 🔍 Step 1: Execution Tracer
-        
-        Let's build a comprehensive execution tracer for DSPy agents:
-        """
+        cell3_desc = mo.md(
+            cleandoc(
+                """
+                ## 🔍 Step 1: Execution Tracer
+
+                Let's build a comprehensive execution tracer for DSPy agents:
+                """
+            )
         )
 
         # Execution Tracer Class
@@ -139,7 +145,7 @@ def __(available_providers, mo):
                 self.trace_id_counter = 0
 
             def start_trace(self, agent_name: str, input_data: dict):
-                """Start a new execution trace."""
+                """Start a new execution _trace."""
                 self.trace_id_counter += 1
                 self.current_trace = {
                     "trace_id": self.trace_id_counter,
@@ -157,7 +163,7 @@ def __(available_providers, mo):
             def log_step(
                 self, step_name: str, step_data: dict, step_output: Any = None
             ):
-                """Log a step in the current trace."""
+                """Log a step in the current _trace."""
                 if not self.current_trace:
                     return
 
@@ -175,7 +181,7 @@ def __(available_providers, mo):
             def log_error(
                 self, error_type: str, error_message: str, context: dict = None
             ):
-                """Log an error in the current trace."""
+                """Log an error in the current _trace."""
                 if not self.current_trace:
                     return
 
@@ -190,7 +196,7 @@ def __(available_providers, mo):
                 self.current_trace["errors"].append(error_info)
 
             def end_trace(self, final_output: Any = None, status: str = "completed"):
-                """End the current trace."""
+                """End the current _trace."""
                 if not self.current_trace:
                     return
 
@@ -224,10 +230,10 @@ def __(available_providers, mo):
                 self.current_trace = None
 
             def get_trace(self, trace_id: int):
-                """Get a specific trace by ID."""
-                for trace in self.traces:
-                    if trace["trace_id"] == trace_id:
-                        return trace
+                """Get a specific _trace by ID."""
+                for _trace in self.traces:
+                    if _trace["trace_id"] == trace_id:
+                        return _trace
                 return None
 
             def get_all_traces(self):
@@ -264,35 +270,44 @@ def __(available_providers, mo):
         # Create global tracer
         execution_tracer = DSPyExecutionTracer()
 
-        mo.md(
-            """
-        ### 🔍 Execution Tracer Created
-        
-        **Tracer Features:**
-        - **Step-by-Step Logging** - Track every execution step
-        - **Error Tracking** - Capture and analyze errors
-        - **Performance Metrics** - Measure execution performance
-        - **Trace Management** - Store and retrieve execution traces
-        - **Performance Analysis** - Aggregate performance insights
-        
-        The tracer is ready to monitor agent executions!
-        """
+        cell3_content = mo.md(
+            cleandoc(
+                """
+                ### 🔍 Execution Tracer Created
+
+                **Tracer Features:**  
+                - **Step-by-Step Logging** - Track every execution step  
+                - **Error Tracking** - Capture and analyze errors  
+                - **Performance Metrics** - Measure execution performance  
+                - **Trace Management** - Store and retrieve execution traces  
+                - **Performance Analysis** - Aggregate performance insights  
+
+                The tracer is ready to monitor agent executions!
+                """
+            )
         )
     else:
+        cell3_desc = mo.md("")
         DSPyExecutionTracer = None
         execution_tracer = None
-    return DSPyExecutionTracer, execution_tracer
+        cell3_content = mo.md("")
+
+    cell3_out = mo.vstack([cell3_desc, cell3_content])
+    output.replace(cell3_out)
+    return (execution_tracer,)
 
 
 @app.cell
-def __(available_providers, dspy, execution_tracer, mo):
+def _(available_providers, cleandoc, dspy, execution_tracer, mo, output, time):
     if available_providers and execution_tracer:
-        mo.md(
-            """
-        ## 🤖 Step 2: Traced Agent Implementation
-        
-        Let's create an agent that uses our execution tracer:
-        """
+        cell4_desc = mo.md(
+            cleandoc(
+                """
+                ## 🤖 Step 2: Traced Agent Implementation
+
+                Let's create an agent that uses our execution tracer:
+                """
+            )
         )
 
         # Traced Agent Signature
@@ -318,7 +333,7 @@ def __(available_providers, dspy, execution_tracer, mo):
 
             def execute(self, **inputs):
                 """Execute the agent with full tracing."""
-                # Start trace
+                # Start _trace
                 trace_id = self.tracer.start_trace("TracedAgent", inputs)
 
                 try:
@@ -357,7 +372,7 @@ def __(available_providers, dspy, execution_tracer, mo):
                             "execution_planning", {"steps": result.execution_steps}
                         )
 
-                    # End trace successfully
+                    # End _trace successfully
                     self.tracer.end_trace(result, "completed")
 
                     return {
@@ -368,7 +383,7 @@ def __(available_providers, dspy, execution_tracer, mo):
                     }
 
                 except Exception as e:
-                    # Log error and end trace
+                    # Log error and end _trace
                     self.tracer.log_error("execution_error", str(e), {"inputs": inputs})
                     self.tracer.end_trace(None, "failed")
 
@@ -377,28 +392,35 @@ def __(available_providers, dspy, execution_tracer, mo):
         # Create traced agent
         traced_agent = TracedAgent(TracedAgentSignature, execution_tracer)
 
-        mo.md(
-            """
-        ### 🤖 Traced Agent Created
-        
-        **Agent Features:**
-        - **Full Execution Tracing** - Every step is logged
-        - **Error Handling** - Errors are captured and traced
-        - **Performance Monitoring** - Execution times are tracked
-        - **State Preservation** - All intermediate states are saved
-        
-        The agent is ready for comprehensive debugging!
-        """
+        cell4_content = mo.md(
+            cleandoc(
+                """
+                ### 🤖 Traced Agent Created
+
+                **Agent Features:**  
+                - **Full Execution Tracing** - Every step is logged  
+                - **Error Handling** - Errors are captured and traced  
+                - **Performance Monitoring** - Execution times are tracked  
+                - **State Preservation** - All intermediate states are saved  
+
+                The agent is ready for comprehensive debugging!
+                """
+            )
         )
     else:
+        cell4_desc = mo.md("")
         TracedAgentSignature = None
         TracedAgent = None
         traced_agent = None
-    return TracedAgent, TracedAgentSignature, traced_agent
+        cell4_content = mo.md("")
+
+    cell4_out = mo.vstack([cell4_desc, cell4_content])
+    output.replace(cell4_out)
+    return (traced_agent,)
 
 
 @app.cell
-def __(available_providers, mo, traced_agent):
+def _(available_providers, mo, output, traced_agent):
     if available_providers and traced_agent:
         # Test tasks for the traced agent
         debug_tasks = [
@@ -422,13 +444,13 @@ def __(available_providers, mo, traced_agent):
 
         task_selector = mo.ui.dropdown(
             options=[task["task"][:60] + "..." for task in debug_tasks],
-            label="Select a task to trace",
+            label="Select a task to _trace",
             value=debug_tasks[0]["task"][:60] + "...",
         )
 
-        run_traced_demo = mo.ui.button(label="🔍 Run Traced Execution")
+        run_traced_demo = mo.ui.run_button(label="🔍 Run Traced Execution")
 
-        mo.vstack(
+        cell5_out = mo.vstack(
             [
                 mo.md("### 🧪 Traced Agent Testing"),
                 mo.md("Select a task to execute with full tracing:"),
@@ -440,15 +462,20 @@ def __(available_providers, mo, traced_agent):
         debug_tasks = None
         task_selector = None
         run_traced_demo = None
+        cell5_out = mo.md("")
+
+    output.replace(cell5_out)
     return debug_tasks, run_traced_demo, task_selector
 
 
 @app.cell
-def __(
+def _(
     available_providers,
+    cleandoc,
     debug_tasks,
     execution_tracer,
     mo,
+    output,
     run_traced_demo,
     task_selector,
     time,
@@ -471,25 +498,27 @@ def __(
                 )
 
                 if execution_result["success"]:
-                    # Get trace details
-                    trace = execution_tracer.get_trace(execution_result["trace_id"])
-                    result = execution_result["result"]
+                    # Get _trace details
+                    _trace = execution_tracer.get_trace(execution_result["trace_id"])
+                    _result = execution_result["result"]
 
-                    # Format trace steps
+                    # Format _trace steps
                     step_displays = []
-                    for step in trace["steps"]:
+                    for step in _trace["steps"]:
                         timestamp = time.strftime(
                             "%H:%M:%S", time.localtime(step["timestamp"])
                         )
                         step_displays.append(
-                            f"""
-**Step {step['step_number']}: {step['step_name']}** ({timestamp})
-- Data: {step['step_data']}
-- Output: {step['step_output'][:100] + '...' if step['step_output'] and len(step['step_output']) > 100 else step['step_output']}
-"""
+                            cleandoc(
+                                f"""
+                                **Step {step['step_number']}: {step['step_name']}** ({timestamp})
+                                - Data: {step['step_data']}
+                                - Output: {step['step_output'][:100] + '...' if step['step_output'] and len(step['step_output']) > 100 else step['step_output']}
+                                """
+                            )
                         )
 
-                    mo.vstack(
+                    cell6_out = mo.vstack(
                         [
                             mo.md("## 🔍 Traced Execution Results"),
                             mo.md(f"**Task:** {selected_task_data['task']}"),
@@ -499,80 +528,78 @@ def __(
                                 f"**Execution Time:** {execution_result['execution_time']:.3f}s"
                             ),
                             mo.md("### 🤖 Agent Output"),
-                            mo.md(f"**Analysis:** {result.analysis}"),
-                            mo.md(f"**Approach:** {result.approach}"),
-                            mo.md(f"**Execution Steps:** {result.execution_steps}"),
-                            mo.md(f"**Result:** {result.result}"),
-                            mo.md(f"**Confidence:** {result.confidence}"),
+                            mo.md(f"**Analysis:** {_result.analysis}"),
+                            mo.md(f"**Approach:** {_result.approach}"),
+                            mo.md(f"**Execution Steps:** {_result.execution_steps}"),
+                            mo.md(f"**Result:** {_result.result}"),
+                            mo.md(f"**Confidence:** {_result.confidence}"),
                             mo.md("### 📋 Execution Trace"),
                             mo.md("\n".join(step_displays)),
                             mo.md("### 📊 Performance Metrics"),
                             mo.md(
-                                f"""
-                        - **Total Steps:** {trace['performance_metrics']['total_steps']}
-                        - **Total Errors:** {trace['performance_metrics']['total_errors']}
-                        - **Success Rate:** {trace['performance_metrics']['success_rate']:.2%}
-                        - **Average Step Time:** {trace['performance_metrics']['avg_step_time']:.3f}s
-                        """
+                                cleandoc(
+                                    f"""
+                                    - **Total Steps:** {_trace['performance_metrics']['total_steps']}
+                                    - **Total Errors:** {_trace['performance_metrics']['total_errors']}
+                                    - **Success Rate:** {_trace['performance_metrics']['success_rate']:.2%}
+                                    - **Average Step Time:** {_trace['performance_metrics']['avg_step_time']:.3f}s
+                                    """
+                                )
                             ),
                         ]
                     )
                 else:
                     # Show error details
-                    trace = execution_tracer.get_trace(execution_result["trace_id"])
+                    _trace = execution_tracer.get_trace(execution_result["trace_id"])
 
-                    mo.vstack(
+                    cell6_out = mo.vstack(
                         [
                             mo.md("## ❌ Traced Execution Failed"),
                             mo.md(f"**Error:** {execution_result['error']}"),
                             mo.md(f"**Trace ID:** {execution_result['trace_id']}"),
                             mo.md("### 🐛 Error Details"),
-                            mo.md(f"**Errors:** {len(trace['errors'])}"),
+                            mo.md(f"**Errors:** {len(_trace['errors'])}"),
                             mo.md(
                                 "\n".join(
                                     [
                                         f"- {err['error_type']}: {err['error_message']}"
-                                        for err in trace["errors"]
+                                        for err in _trace["errors"]
                                     ]
                                 )
                             ),
                         ]
                     )
             else:
-                mo.md("❌ Task not found")
+                cell6_out = mo.md("❌ Task not found")
 
         except Exception as e:
-            mo.md(f"❌ **Traced Demo Error:** {str(e)}")
+            cell6_out = mo.md(f"❌ **Traced Demo Error:** {str(e)}")
     else:
-        mo.md(
+        cell6_out = mo.md(
             "*Select a task and click 'Run Traced Execution' to see detailed tracing*"
         )
-    return (
-        execution_result,
-        result,
-        selected_task_data,
-        step,
-        step_displays,
-        timestamp,
-        trace,
-    )
+
+    output.replace(cell6_out)
+    return
 
 
 @app.cell
-def __(available_providers, execution_tracer, mo):
+def _(available_providers, cleandoc, execution_tracer, mo, output):
     if available_providers and execution_tracer:
-        mo.md(
-            """
-        ## 📊 Step 3: Performance Analysis Dashboard
-        
-        Let's analyze the performance of our traced executions:
-        """
+        cell7_desc = mo.md(
+            cleandoc(
+                """
+                ## 📊 Step 3: Performance Analysis Dashboard
+
+                Let's analyze the performance of our traced executions:
+                """
+            )
         )
 
         # Performance analysis button
-        analyze_performance = mo.ui.button(label="📊 Analyze Performance")
+        analyze_performance = mo.ui.run_button(label="📊 Analyze Performance")
 
-        mo.vstack(
+        cell7_content = mo.vstack(
             [
                 mo.md("### 📈 Performance Analysis"),
                 mo.md("Analyze performance across all traced executions:"),
@@ -580,12 +607,29 @@ def __(available_providers, execution_tracer, mo):
             ]
         )
     else:
+        cell7_desc = mo.md("")
         analyze_performance = None
+        cell7_content = mo.md("")
+
+    cell7_out = mo.vstack(
+        [
+            cell7_desc,
+            cell7_content,
+        ]
+    )
+    output.replace(cell7_out)
     return (analyze_performance,)
 
 
 @app.cell
-def __(analyze_performance, available_providers, execution_tracer, mo, time):
+def _(
+    analyze_performance,
+    available_providers,
+    cleandoc,
+    execution_tracer,
+    mo,
+    output,
+):
     if available_providers and analyze_performance.value and execution_tracer:
         try:
             # Get performance analysis
@@ -597,16 +641,16 @@ def __(analyze_performance, available_providers, execution_tracer, mo, time):
 
                 # Create performance summary table
                 trace_summary = []
-                for trace in all_traces:
+                for _trace in all_traces:
                     trace_summary.append(
                         {
-                            "Trace ID": trace["trace_id"],
-                            "Agent": trace["agent_name"],
-                            "Status": trace["status"],
-                            "Steps": trace["performance_metrics"]["total_steps"],
-                            "Errors": trace["performance_metrics"]["total_errors"],
-                            "Time (s)": f"{trace.get('total_time', 0):.3f}",
-                            "Success Rate": f"{trace['performance_metrics']['success_rate']:.1%}",
+                            "Trace ID": _trace["trace_id"],
+                            "Agent": _trace["agent_name"],
+                            "Status": _trace["status"],
+                            "Steps": _trace["performance_metrics"]["total_steps"],
+                            "Errors": _trace["performance_metrics"]["total_errors"],
+                            "Time (s)": f"{_trace.get('total_time', 0):.3f}",
+                            "Success Rate": f"{_trace['performance_metrics']['success_rate']:.1%}",
                         }
                     )
 
@@ -625,67 +669,102 @@ def __(analyze_performance, available_providers, execution_tracer, mo, time):
                 if not issues:
                     issues.append("Performance looks good!")
 
-                mo.vstack(
+                cell8_out = mo.vstack(
                     [
                         mo.md("## 📊 Performance Analysis Results"),
                         mo.md("### 🎯 Overall Performance"),
                         mo.md(
-                            f"""
-                    - **Total Traces:** {performance_data['total_traces']}
-                    - **Successful Traces:** {performance_data['successful_traces']}
-                    - **Success Rate:** {performance_data['success_rate']:.1%}
-                    - **Average Execution Time:** {performance_data['avg_execution_time']:.3f}s
-                    - **Average Steps per Trace:** {performance_data['avg_steps_per_trace']:.1f}
-                    - **Total Errors:** {performance_data['total_errors']}
-                    """
+                            cleandoc(
+                                f"""
+                                - **Total Traces:** {performance_data['total_traces']}
+                                - **Successful Traces:** {performance_data['successful_traces']}
+                                - **Success Rate:** {performance_data['success_rate']:.1%}
+                                - **Average Execution Time:** {performance_data['avg_execution_time']:.3f}s
+                                - **Average Steps per Trace:** {performance_data['avg_steps_per_trace']:.1f}
+                                - **Total Errors:** {performance_data['total_errors']}
+                                """
+                            )
                         ),
                         mo.md("### 📋 Trace Summary"),
                         mo.ui.table(trace_summary),
                         mo.md("### ⚠️ Performance Issues"),
                         mo.md("\n".join([f"- {issue}" for issue in issues])),
                         mo.md(
-                            """
-                    ### 💡 Optimization Recommendations
-                    
-                    **For High Execution Times:**
-                    - Profile individual steps to identify bottlenecks
-                    - Consider parallel execution where possible
-                    - Optimize prompt length and complexity
-                    
-                    **For High Error Rates:**
-                    - Review input validation and error handling
-                    - Add retry mechanisms for transient failures
-                    - Improve error recovery strategies
-                    
-                    **For Low Success Rates:**
-                    - Analyze failed traces for common patterns
-                    - Improve signature design and field descriptions
-                    - Add more robust validation and fallbacks
-                    """
+                            cleandoc(
+                                """
+                                ### 💡 Optimization Recommendations
+
+                                **For High Execution Times:**  
+                                - Profile individual steps to identify bottlenecks  
+                                - Consider parallel execution where possible  
+                                - Optimize prompt length and complexity  
+
+                                **For High Error Rates:**  
+                                - Review input validation and error handling  
+                                - Add retry mechanisms for transient failures  
+                                - Improve error recovery strategies  
+
+                                **For Low Success Rates:**  
+                                - Analyze failed traces for common patterns  
+                                - Improve signature design and field descriptions  
+                                - Add more robust validation and fallbacks  
+                                """
+                            )
                         ),
                     ]
                 )
             else:
-                mo.md(f"❌ **Performance Analysis Error:** {performance_data['error']}")
+                # Provide helpful guidance when no traces are available
+                if "No traces available" in performance_data["error"]:
+                    cell8_out = mo.vstack(
+                        [
+                            mo.md("## 📊 Performance Analysis"),
+                            mo.md("### ⚠️ No Traces Available"),
+                            mo.md(
+                                cleandoc(
+                                    """
+                                To analyze performance, you need to run some traced executions first.
+                                
+                                **Steps to get performance data:**
+                                1. Go back to **Step 2** (cell 6) 
+                                2. Select a task from the dropdown
+                                3. Click **"🔍 Run Traced Execution"**
+                                4. Run a few different tasks to get meaningful analysis
+                                5. Come back here and click **"📊 Analyze Performance"**
+                                
+                                **Tip:** Run at least 2-3 different tasks to see interesting performance comparisons!
+                                """
+                                )
+                            ),
+                        ]
+                    )
+                else:
+                    cell8_out = mo.md(
+                        f"❌ **Performance Analysis Error:** {performance_data['error']}"
+                    )
 
         except Exception as e:
-            mo.md(f"❌ **Analysis Error:** {str(e)}")
+            cell8_out = mo.md(f"❌ **Analysis Error:** {str(e)}")
     else:
-        mo.md(
+        cell8_out = mo.md(
             "*Click 'Analyze Performance' to see performance insights (run some traced executions first)*"
         )
-    return all_traces, issues, performance_data, trace_summary
+
+    output.replace(cell8_out)
+    return
 
 
 @app.cell
-def __(available_providers, mo):
+def _(available_providers, cleandoc, execution_tracer, mo, output):
     if available_providers:
-        mo.md(
-            """
-        ## 🔧 Step 4: Interactive Debugging Tools
-        
-        Let's build interactive tools for real-time debugging:
-        """
+        cell9_desc = mo.md(
+            cleandoc(
+                """
+                ## 🔧 Step 4: Interactive Debugging Tools
+
+                Let's build interactive tools for real-time debugging:
+                """
+            )
         )
 
         # Interactive Debugger
@@ -713,25 +792,25 @@ def __(available_providers, mo):
                 return f"Watching '{variable_name}': {expression}"
 
             def inspect_trace(self, trace_id: int, step_number: int = None):
-                """Inspect a specific trace and step."""
-                trace = self.tracer.get_trace(trace_id)
-                if not trace:
+                """Inspect a specific _trace and step."""
+                _trace = self.tracer.get_trace(trace_id)
+                if not _trace:
                     return {"error": f"Trace {trace_id} not found"}
 
                 if step_number is None:
-                    # Return trace overview
+                    # Return _trace overview
                     return {
                         "trace_id": trace_id,
-                        "agent_name": trace["agent_name"],
-                        "status": trace["status"],
-                        "total_steps": len(trace["steps"]),
-                        "total_errors": len(trace["errors"]),
-                        "execution_time": trace.get("total_time", 0),
+                        "agent_name": _trace["agent_name"],
+                        "status": _trace["status"],
+                        "total_steps": len(_trace["steps"]),
+                        "total_errors": len(_trace["errors"]),
+                        "execution_time": _trace.get("total_time", 0),
                     }
                 else:
                     # Return specific step details
-                    if step_number <= len(trace["steps"]):
-                        step = trace["steps"][step_number - 1]
+                    if step_number <= len(_trace["steps"]):
+                        step = _trace["steps"][step_number - 1]
                         return {
                             "step_number": step["step_number"],
                             "step_name": step["step_name"],
@@ -797,64 +876,80 @@ def __(available_providers, mo):
         # Create interactive debugger
         interactive_debugger = InteractiveDebugger(execution_tracer)
 
-        mo.md(
-            """
-        ### 🔧 Interactive Debugger Created
-        
-        **Debugging Features:**
-        - **Breakpoint Management** - Set and remove breakpoints
-        - **Variable Watching** - Monitor specific variables
-        - **Trace Inspection** - Deep dive into execution traces
-        - **Trace Comparison** - Compare different executions
-        
-        The debugger provides powerful interactive debugging capabilities!
-        """
+        cell9_content = mo.md(
+            cleandoc(
+                """
+                ### 🔧 Interactive Debugger Created
+
+                **Debugging Features:**  
+                - **Breakpoint Management** - Set and remove breakpoints  
+                - **Variable Watching** - Monitor specific variables  
+                - **Trace Inspection** - Deep dive into execution traces  
+                - **Trace Comparison** - Compare different executions  
+
+                The debugger provides powerful interactive debugging capabilities!
+                """
+            )
         )
     else:
+        cell9_desc = mo.md("")
         InteractiveDebugger = None
         interactive_debugger = None
-    return InteractiveDebugger, interactive_debugger
+        cell9_content = mo.md("")
+
+    cell9_out = mo.vstack([cell9_desc, cell9_content])
+    output.replace(cell9_out)
+    return (interactive_debugger,)
 
 
 @app.cell
-def __(available_providers, interactive_debugger, mo):
+def _(available_providers, interactive_debugger, mo, output):
     if available_providers and interactive_debugger:
-        # Interactive debugging interface
-        debug_interface = mo.ui.form(
-            {
-                "action": mo.ui.dropdown(
-                    options=[
-                        "Inspect Trace",
-                        "Compare Traces",
-                        "Add Breakpoint",
-                        "Add Watch",
-                    ],
-                    label="Debug Action",
-                    value="Inspect Trace",
-                ),
-                "trace_id": mo.ui.number(label="Trace ID", value=1, start=1),
-                "trace_id2": mo.ui.number(
-                    label="Second Trace ID (for comparison)", value=2, start=1
-                ),
-                "step_number": mo.ui.number(
-                    label="Step Number (optional)", value=1, start=1
-                ),
-                "breakpoint_name": mo.ui.text(
-                    label="Breakpoint Step Name", placeholder="e.g., prediction_start"
-                ),
-                "watch_variable": mo.ui.text(
-                    label="Variable Name to Watch",
-                    placeholder="e.g., result_confidence",
-                ),
-                "watch_expression": mo.ui.text(
-                    label="Watch Expression",
-                    placeholder="e.g., result.confidence > 0.8",
-                ),
-                "execute_debug": mo.ui.button(label="🔍 Execute Debug Action"),
-            }
+        # Interactive debugging interface (individual components to avoid _clone issues)
+        action_dropdown = mo.ui.dropdown(
+            options=[
+                "Inspect Trace",
+                "Compare Traces",
+                "Add Breakpoint",
+                "Add Watch",
+            ],
+            label="Debug Action",
+            value="Inspect Trace",
+        )
+        trace_id_input = mo.ui.number(label="Trace ID", value=1, start=1)
+        trace_id2_input = mo.ui.number(
+            label="Second Trace ID (for comparison)", value=2, start=1
+        )
+        step_number_input = mo.ui.number(
+            label="Step Number (optional)", value=1, start=1
+        )
+        breakpoint_name_input = mo.ui.text(
+            label="Breakpoint Step Name", placeholder="e.g., prediction_start"
+        )
+        watch_variable_input = mo.ui.text(
+            label="Variable Name to Watch",
+            placeholder="e.g., result_confidence",
+        )
+        watch_expression_input = mo.ui.text(
+            label="Watch Expression",
+            placeholder="e.g., result.confidence > 0.8",
+        )
+        execute_debug_button = mo.ui.run_button(label="🔍 Execute Debug Action")
+
+        debug_interface = mo.vstack(
+            [
+                action_dropdown,
+                trace_id_input,
+                trace_id2_input,
+                step_number_input,
+                breakpoint_name_input,
+                watch_variable_input,
+                watch_expression_input,
+                execute_debug_button,
+            ]
         )
 
-        mo.vstack(
+        cell10_out = mo.vstack(
             [
                 mo.md("### 🔧 Interactive Debugging Interface"),
                 mo.md("Use the debugging tools to inspect and analyze executions:"),
@@ -863,44 +958,64 @@ def __(available_providers, interactive_debugger, mo):
         )
     else:
         debug_interface = None
-    return (debug_interface,)
+        cell10_out = mo.md("")
+
+    output.replace(cell10_out)
+    return (
+        action_dropdown,
+        breakpoint_name_input,
+        execute_debug_button,
+        step_number_input,
+        trace_id2_input,
+        trace_id_input,
+        watch_expression_input,
+        watch_variable_input,
+    )
 
 
 @app.cell
-def __(available_providers, debug_interface, interactive_debugger, json, mo):
-    if (
-        available_providers
-        and debug_interface.value
-        and debug_interface.value["execute_debug"]
-    ):
+def _(
+    action_dropdown,
+    available_providers,
+    breakpoint_name_input,
+    execute_debug_button,
+    interactive_debugger,
+    json,
+    mo,
+    output,
+    step_number_input,
+    trace_id2_input,
+    trace_id_input,
+    watch_expression_input,
+    watch_variable_input,
+):
+    if available_providers and execute_debug_button.value:
         try:
-            action = debug_interface.value["action"]
+            action = action_dropdown.value
 
             if action == "Inspect Trace":
-                trace_id = debug_interface.value["trace_id"]
+                trace_id = trace_id_input.value
                 step_number = (
-                    debug_interface.value["step_number"]
-                    if debug_interface.value["step_number"] > 0
-                    else None
+                    step_number_input.value if step_number_input.value > 0 else None
                 )
 
-                result = interactive_debugger.inspect_trace(trace_id, step_number)
+                _result = interactive_debugger.inspect_trace(trace_id, step_number)
 
-                mo.vstack(
+                cell11_out = mo.vstack(
                     [
                         mo.md(f"## 🔍 Trace Inspection: {trace_id}"),
                         mo.md("### 📋 Inspection Result"),
-                        mo.md(f"```json\n{json.dumps(result, indent=2)}\n```"),
+                        mo.md(f"```json\n{json.dumps(_result, indent=2)}\n```"),
                     ]
                 )
 
             elif action == "Compare Traces":
-                trace_id1 = debug_interface.value["trace_id"]
-                trace_id2 = debug_interface.value["trace_id2"]
+                trace_id1 = trace_id_input.value
+                trace_id2 = trace_id2_input.value
 
                 comparison = interactive_debugger.compare_traces(trace_id1, trace_id2)
 
-                mo.vstack(
+                cell11_out = mo.vstack(
                     [
                         mo.md(f"## ⚖️ Trace Comparison: {trace_id1} vs {trace_id2}"),
                         mo.md("### 📊 Comparison Results"),
@@ -909,149 +1024,147 @@ def __(available_providers, debug_interface, interactive_debugger, json, mo):
                 )
 
             elif action == "Add Breakpoint":
-                breakpoint_name = debug_interface.value["breakpoint_name"]
+                breakpoint_name = breakpoint_name_input.value
                 if breakpoint_name:
                     result = interactive_debugger.add_breakpoint(breakpoint_name)
-                    mo.md(f"## 🔴 Breakpoint Added\n\n{result}")
+                    cell11_out = mo.md(f"## 🔴 Breakpoint Added\n\n{result}")
                 else:
-                    mo.md("❌ Please provide a breakpoint step name")
+                    cell11_out = mo.md("❌ Please provide a breakpoint step name")
 
             elif action == "Add Watch":
-                var_name = debug_interface.value["watch_variable"]
-                expression = debug_interface.value["watch_expression"]
+                var_name = watch_variable_input.value
+                expression = watch_expression_input.value
                 if var_name and expression:
                     result = interactive_debugger.add_watch(var_name, expression)
-                    mo.md(f"## 👁️ Watch Added\n\n{result}")
+                    cell11_out = mo.md(f"## 👁️ Watch Added\n\n{result}")
                 else:
-                    mo.md("❌ Please provide both variable name and expression")
+                    cell11_out = mo.md(
+                        "❌ Please provide both variable name and expression"
+                    )
 
         except Exception as e:
-            mo.md(f"❌ **Debug Action Error:** {str(e)}")
+            cell11_out = mo.md(f"❌ **Debug Action Error:** {str(e)}")
     else:
-        mo.md(
+        cell11_out = mo.md(
             "*Select a debug action and click 'Execute Debug Action' to use the debugging tools*"
         )
-    return (
-        action,
-        breakpoint_name,
-        comparison,
-        expression,
-        result,
-        step_number,
-        trace_id,
-        trace_id1,
-        trace_id2,
-        var_name,
-    )
+
+    output.replace(cell11_out)
+    return
 
 
 @app.cell
-def __(available_providers, mo):
-    if available_providers:
-        mo.md(
+def _(available_providers, cleandoc, mo, output):
+    cell12_out = mo.md(
+        cleandoc(
             """
-        ## 🎓 Advanced Debugging Dashboard Complete!
-        
-        ### 🏆 What You've Mastered
-        
-        ✅ **Execution Tracing** - Comprehensive step-by-step execution monitoring
-        ✅ **Traced Agent Implementation** - Agents with built-in debugging capabilities
-        ✅ **Performance Analysis** - Detailed performance metrics and optimization insights
-        ✅ **Interactive Debugging** - Real-time debugging tools and interfaces
-        ✅ **Error Diagnosis** - Advanced error tracking and analysis
-        
-        ### 🛠️ Key Components Built
-        
-        1. **DSPyExecutionTracer**
-           - Step-by-step execution logging
-           - Error tracking and analysis
-           - Performance metrics collection
-           - Trace management and retrieval
-        
-        2. **TracedAgent**
-           - Agent wrapper with full tracing
-           - Automatic error handling and logging
-           - Performance monitoring integration
-           - State preservation across execution
-        
-        3. **Performance Analyzer**
-           - Aggregate performance metrics
-           - Success rate and error analysis
-           - Execution time profiling
-           - Optimization recommendations
-        
-        4. **Interactive Debugger**
-           - Breakpoint management
-           - Variable watching
-           - Trace inspection and comparison
-           - Real-time debugging interface
-        
-        ### 🎯 Skills Developed
-        
-        - **Debugging Architecture** - Designing comprehensive debugging systems
-        - **Execution Monitoring** - Tracking and analyzing agent behavior
-        - **Performance Profiling** - Identifying and resolving bottlenecks
-        - **Error Analysis** - Diagnosing and fixing complex issues
-        - **Interactive Tools** - Building user-friendly debugging interfaces
-        
-        ### 🚀 Module 02 Complete!
-        
-        Congratulations! You've mastered advanced DSPy modules:
-        
-        **What You've Built:**
-        - ✅ ReAct agents with reasoning and action capabilities
-        - ✅ Comprehensive tool integration framework
-        - ✅ Multi-step reasoning pipelines
-        - ✅ Advanced debugging and monitoring tools
-        
-        **Next Module: Retrieval-Augmented Generation (RAG)**
-        ```bash
-        uv run marimo run 03-retrieval-rag/rag_implementation.py
-        ```
-        
-        **Coming Up:**
-        - Vector database integration
-        - Document processing and embedding
-        - Retrieval optimization techniques
-        - RAG evaluation and monitoring
-        
-        ### 💡 Advanced Practice Challenges
-        
-        Before moving on, try building:
-        
-        1. **Multi-Agent Debugging System**
-           - Debug interactions between multiple agents
-           - Track message passing and coordination
-           - Analyze collective behavior patterns
-        
-        2. **Production Monitoring Dashboard**
-           - Real-time agent performance monitoring
-           - Automated alerting for performance issues
-           - Historical trend analysis and reporting
-        
-        3. **A/B Testing Framework**
-           - Compare different agent configurations
-           - Statistical significance testing
-           - Automated performance optimization
-        
-        4. **Error Recovery System**
-           - Automatic error detection and recovery
-           - Fallback strategy implementation
-           - Self-healing agent capabilities
-        
-        ### 🏭 Production Deployment Checklist
-        
-        When deploying advanced DSPy systems:
-        - [ ] Comprehensive logging and monitoring implemented
-        - [ ] Error handling and recovery strategies defined
-        - [ ] Performance baselines and alerts configured
-        - [ ] Debugging tools accessible to operations team
-        - [ ] Documentation for troubleshooting procedures
-        - [ ] Regular performance review and optimization schedule
-        
-        Master these advanced debugging techniques and you can build, deploy, and maintain sophisticated DSPy systems with confidence!
-        """
+                ## 🎓 Advanced Debugging Dashboard Complete!
+
+                ### 🏆 What You've Mastered
+
+                ✅ **Execution Tracing** - Comprehensive step-by-step execution monitoring
+                ✅ **Traced Agent Implementation** - Agents with built-in debugging capabilities
+                ✅ **Performance Analysis** - Detailed performance metrics and optimization insights
+                ✅ **Interactive Debugging** - Real-time debugging tools and interfaces
+                ✅ **Error Diagnosis** - Advanced error tracking and analysis
+
+                ### 🛠️ Key Components Built
+
+                1. **DSPyExecutionTracer**
+                    - Step-by-step execution logging
+                    - Error tracking and analysis
+                    - Performance metrics collection
+                    - Trace management and retrieval
+
+                2. **TracedAgent**
+                    - Agent wrapper with full tracing
+                    - Automatic error handling and logging
+                    - Performance monitoring integration
+                    - State preservation across execution
+
+                3. **Performance Analyzer**
+                    - Aggregate performance metrics
+                    - Success rate and error analysis
+                    - Execution time profiling
+                    - Optimization recommendations
+
+                4. **Interactive Debugger**
+                    - Breakpoint management
+                    - Variable watching
+                    - Trace inspection and comparison
+                    - Real-time debugging interface
+
+                ### 🎯 Skills Developed
+
+                - **Debugging Architecture** - Designing comprehensive debugging systems
+                - **Execution Monitoring** - Tracking and analyzing agent behavior
+                - **Performance Profiling** - Identifying and resolving bottlenecks
+                - **Error Analysis** - Diagnosing and fixing complex issues
+                - **Interactive Tools** - Building user-friendly debugging interfaces
+
+                ### 🚀 Module 02 Complete!
+
+                Congratulations! You've mastered advanced DSPy modules:
+
+                **What You've Built:**
+                - ✅ ReAct agents with reasoning and action capabilities
+                - ✅ Comprehensive tool integration framework
+                - ✅ Multi-step reasoning pipelines
+                - ✅ Advanced debugging and monitoring tools
+
+                **Next Module: Retrieval-Augmented Generation (RAG)**
+                ```bash
+                uv run marimo run 03-retrieval-rag/rag_implementation.py
+                ```
+
+                **Coming Up:**
+                - Vector database integration
+                - Document processing and embedding
+                - Retrieval optimization techniques
+                - RAG evaluation and monitoring
+
+                ### 💡 Advanced Practice Challenges
+
+                Before moving on, try building:
+
+                1. **Multi-Agent Debugging System**
+                    - Debug interactions between multiple agents
+                    - Track message passing and coordination
+                    - Analyze collective behavior patterns
+
+                2. **Production Monitoring Dashboard**
+                    - Real-time agent performance monitoring
+                    - Automated alerting for performance issues
+                    - Historical trend analysis and reporting
+
+                3. **A/B Testing Framework**
+                    - Compare different agent configurations
+                    - Statistical significance testing
+                    - Automated performance optimization
+
+                4. **Error Recovery System**
+                    - Automatic error detection and recovery
+                    - Fallback strategy implementation
+                    - Self-healing agent capabilities
+
+                ### 🏭 Production Deployment Checklist
+
+                When deploying advanced DSPy systems:
+                - [ ] Comprehensive logging and monitoring implemented
+                - [ ] Error handling and recovery strategies defined
+                - [ ] Performance baselines and alerts configured
+                - [ ] Debugging tools accessible to operations team
+                - [ ] Documentation for troubleshooting procedures
+                - [ ] Regular performance review and optimization schedule
+
+                Master these advanced debugging techniques and you can build, deploy, and maintain sophisticated DSPy systems with confidence!
+                """
         )
+        if available_providers
+        else ""
+    )
+
+    output.replace(cell12_out)
     return
 
 
