@@ -1,3 +1,6 @@
+# pylint: disable=import-error,import-outside-toplevel,reimported
+# cSpell:ignore dspy marimo
+
 import marimo
 
 __generated_with = "0.14.16"
@@ -5,17 +8,15 @@ app = marimo.App(width="medium")
 
 
 @app.cell
-def __():
+def _():
     import sys
     import time
+    from inspect import cleandoc
     from pathlib import Path
 
     import dspy
     import marimo as mo
-
-    # Add project root to path
-    project_root = Path(__file__).parent.parent.parent
-    sys.path.insert(0, str(project_root))
+    from marimo import output
 
     from common import (
         DSPyParameterPanel,
@@ -24,91 +25,105 @@ def __():
         setup_dspy_environment,
     )
 
+    # Add project root to path
+    project_root = Path(__file__).parent.parent.parent
+    sys.path.insert(0, str(project_root))
+
     return (
         DSPyParameterPanel,
-        DSPyResultViewer,
-        Path,
+        cleandoc,
         dspy,
         get_config,
         mo,
-        project_root,
+        output,
         setup_dspy_environment,
-        sys,
         time,
     )
 
 
 @app.cell
-def __(mo):
-    mo.md(
-        r"""
-        # 🎛️ Exercise 3: Signature Optimization & Parameter Tuning
-        
-        **Objective:** Master the art of optimizing DSPy signatures through systematic parameter tuning and iterative improvement.
-        
-        ## 📚 What You'll Learn
-        - Optimize signature performance through parameter tuning
-        - Understand the impact of temperature, max_tokens, and other settings
-        - Apply A/B testing methodologies to signature improvement
-        - Develop systematic optimization workflows
-        
-        ## 🎮 Exercise Structure
-        - **Parameter Impact Analysis** - See how settings affect output
-        - **Systematic Optimization** - Step-by-step improvement process
-        - **A/B Testing Framework** - Compare signature variations
-        - **Production Optimization** - Real-world optimization strategies
-        
-        Let's optimize your signatures for peak performance!
-        """
+def _(cleandoc, mo, output):
+    cell1_out = mo.md(
+        cleandoc(
+            r"""
+            # 🎛️ Exercise 3: Signature Optimization & Parameter Tuning
+
+            **Objective:** Master the art of optimizing DSPy signatures through systematic parameter tuning and iterative improvement.
+
+            ## 📚 What You'll Learn
+            - Optimize signature performance through parameter tuning
+            - Understand the impact of model selection and other settings
+            - Apply A/B testing methodologies to signature improvement
+            - Develop systematic optimization workflows
+
+            ## 🎮 Exercise Structure
+            - **Parameter Impact Analysis** - See how settings affect output
+            - **Systematic Optimization** - Step-by-step improvement process
+            - **A/B Testing Framework** - Compare signature variations
+            - **Production Optimization** - Real-world optimization strategies
+
+            Let's optimize your signatures for peak performance!
+            """
+        )
     )
+
+    output.replace(cell1_out)
     return
 
 
 @app.cell
-def __(get_config, mo, setup_dspy_environment):
+def _(cleandoc, get_config, mo, output, setup_dspy_environment):
     # Setup DSPy environment
     config = get_config()
     available_providers = config.get_available_llm_providers()
 
     if available_providers:
         setup_dspy_environment()
-        mo.md(
-            f"""
-        ## ✅ Environment Ready
-        
-        **Configuration:**
-        - Provider: {config.default_llm_provider}
-        - Model: {config.default_model}
-        
-        Ready to optimize signature performance!
-        """
+        cell2_out = mo.md(
+            cleandoc(
+                f"""
+                ## ✅ Environment Ready
+
+                **Configuration:**
+                - Provider: {config.default_provider}
+                - Model: {config.default_model}
+
+                Ready to optimize signature performance!
+                """
+            )
         )
     else:
-        mo.md(
-            """
-        ## ⚠️ Setup Required
-        
-        Please complete Module 00 setup first.
-        """
+        cell2_out = mo.md(
+            cleandoc(
+                """
+                ## ⚠️ Setup Required
+
+                Please complete Module 00 setup first.
+                """
+            )
         )
-    return available_providers, config
+
+    output.replace(cell2_out)
+    return (available_providers,)
 
 
 @app.cell
-def __(available_providers, dspy, mo):
+def _(available_providers, cleandoc, dspy, mo, output):
     if available_providers:
-        mo.md(
-            """
-        ## 🎯 Challenge 1: Parameter Impact Analysis
-        
-        **Task:** Understand how different parameters affect signature performance.
-        
-        **Test Signature:** Creative writing assistant
-        - Input: Topic and writing style
-        - Output: Creative content, tone analysis, improvement suggestions
-        
-        We'll systematically vary parameters to see their impact.
-        """
+        cell3_desc = mo.md(
+            cleandoc(
+                """
+                ## 🎯 Challenge 1: Parameter Impact Analysis
+
+                **Task:** Understand how different parameters affect signature performance.
+
+                **Test Signature:** Creative writing assistant
+                - Input: Topic and writing style
+                - Output: Creative content, tone analysis, improvement suggestions
+
+                We'll systematically vary parameters to see their impact.
+                """
+            )
         )
 
         # Define the test signature
@@ -128,29 +143,38 @@ def __(available_providers, dspy, mo):
         # Create predictor
         creative_predictor = dspy.Predict(CreativeWritingAssistant)
 
-        mo.md(
-            """
-        ### ✍️ Creative Writing Assistant Signature Created
-        
-        **Ready to test parameter variations:**
-        - Temperature (creativity vs consistency)
-        - Max tokens (length control)
-        - Model selection (capability differences)
-        """
+        cell3_content = mo.md(
+            cleandoc(
+                """
+                ### ✍️ Creative Writing Assistant Signature Created
+
+                **Ready to test parameter variations:**
+                - Model selection (capability differences)
+                - Provider selection (performance differences)
+                """
+            )
         )
     else:
+        cell3_desc = mo.md("")
         CreativeWritingAssistant = None
         creative_predictor = None
-    return CreativeWritingAssistant, creative_predictor
+        cell3_content = mo.md("")
+
+    cell3_out = mo.vstack(
+        [
+            cell3_desc,
+            cell3_content,
+        ]
+    )
+    output.replace(cell3_out)
+    return (creative_predictor,)
 
 
 @app.cell
-def __(DSPyParameterPanel, available_providers, mo):
+def _(DSPyParameterPanel, available_providers, mo, output):
     if available_providers:
         # Create parameter panel for testing
         param_panel = DSPyParameterPanel(
-            show_temperature=True,
-            show_max_tokens=True,
             show_model_selection=True,
             show_provider_selection=False,
             custom_params={
@@ -164,7 +188,7 @@ def __(DSPyParameterPanel, available_providers, mo):
             },
         )
 
-        mo.vstack(
+        cell4_out = mo.vstack(
             [
                 mo.md("### 🎛️ Parameter Control Panel"),
                 mo.md("Adjust parameters to see their impact on creative output:"),
@@ -173,46 +197,58 @@ def __(DSPyParameterPanel, available_providers, mo):
         )
     else:
         param_panel = None
+        cell4_out = mo.md("")
+    output.replace(cell4_out)
     return (param_panel,)
 
 
 @app.cell
-def __(available_providers, mo):
+def _(available_providers, mo, output):
     if available_providers:
         # Test case for parameter analysis
-        test_case = {
+        param_analysis_test_case = {
             "topic": "A mysterious library that appears only at midnight",
             "writing_style": "poetic",
         }
 
         # Parameter test button
-        run_param_test = mo.ui.button(label="🧪 Test Parameter Impact")
+        run_param_test = mo.ui.run_button(label="🧪 Test Parameter Impact")
 
-        mo.vstack(
+        cell5_out = mo.vstack(
             [
                 mo.md("### 📝 Test Case"),
-                mo.md(f"**Topic:** {test_case['topic']}"),
-                mo.md(f"**Style:** {test_case['writing_style']}"),
+                mo.md(f"**Topic:** {param_analysis_test_case['topic']}"),
+                mo.md(f"**Style:** {param_analysis_test_case['writing_style']}"),
                 run_param_test,
             ]
         )
     else:
-        test_case = None
+        param_analysis_test_case = None
         run_param_test = None
-    return run_param_test, test_case
+        cell5_out = mo.md("")
+
+    output.replace(cell5_out)
+    return param_analysis_test_case, run_param_test
 
 
 @app.cell
-def __(
+def _(
     available_providers,
+    cleandoc,
     creative_predictor,
     mo,
+    output,
+    param_analysis_test_case,
     param_panel,
     run_param_test,
-    test_case,
     time,
 ):
-    if available_providers and run_param_test.value and param_panel and test_case:
+    if (
+        available_providers
+        and run_param_test.value
+        and param_panel
+        and param_analysis_test_case
+    ):
         try:
             # Get parameter values
             params = param_panel.get_values()
@@ -221,40 +257,47 @@ def __(
             # Apply parameters to DSPy (this would typically be done through dspy.settings)
             # For demonstration, we'll show the parameter impact conceptually
 
-            results = []
-            times = []
+            param_analysis_results = []
+            param_analysis_times = []
 
-            for run in range(num_runs):
-                start_time = time.time()
-                result = creative_predictor(**test_case)
-                execution_time = time.time() - start_time
+            for _ in range(num_runs):
+                param_analysis_start_time = time.time()
+                param_analysis_result = creative_predictor(**param_analysis_test_case)
+                param_analysis_execution_time = time.time() - param_analysis_start_time
 
-                results.append(result)
-                times.append(execution_time)
+                param_analysis_results.append(param_analysis_result)
+                param_analysis_times.append(param_analysis_execution_time)
 
-            avg_time = sum(times) / len(times)
+            avg_param_analysis_time = sum(param_analysis_times) / len(
+                param_analysis_times
+            )
 
             # Analyze results for consistency
-            contents = [r.content for r in results]
-            content_lengths = [len(c.split()) for c in contents]
-            avg_length = sum(content_lengths) / len(content_lengths)
+            param_analysis_contents = [r.content for r in param_analysis_results]
+            param_analysis_content_lengths = [
+                len(c.split()) for c in param_analysis_contents
+            ]
+            avg_param_analysis_length = sum(param_analysis_content_lengths) / len(
+                param_analysis_content_lengths
+            )
 
-            mo.vstack(
+            cell6_out = mo.vstack(
                 [
                     mo.md("## 📊 Parameter Impact Analysis Results"),
                     mo.md(
-                        f"""
-### ⚙️ Parameter Settings
-- **Temperature:** {params.get('temperature', 'default')}
-- **Max Tokens:** {params.get('max_tokens', 'default')}
-- **Model:** {params.get('model', 'default')}
-- **Test Runs:** {num_runs}
+                        cleandoc(
+                            f"""
+                            ### ⚙️ Parameter Settings
+                            - **Model:** {params.get('model', 'default')}
+                            - **Provider:** {params.get('provider', 'default')}
+                            - **Test Runs:** {num_runs}
 
-### 📈 Performance Metrics
-- **Average Execution Time:** {avg_time:.3f} seconds
-- **Average Content Length:** {avg_length:.1f} words
-- **Length Variation:** {max(content_lengths) - min(content_lengths)} words
-                """
+                            ### 📈 Performance Metrics
+                            - **Average Execution Time:** {avg_param_analysis_time:.3f} seconds
+                            - **Average Content Length:** {avg_param_analysis_length:.1f} words
+                            - **Length Variation:** {max(param_analysis_content_lengths) - min(param_analysis_content_lengths)} words
+                            """
+                        )
                     ),
                     mo.md("### 📝 Generated Content Samples"),
                 ]
@@ -262,75 +305,72 @@ def __(
                     mo.vstack(
                         [
                             mo.md(
-                                f"**Run {i+1} ({times[i]:.3f}s, {len(contents[i].split())} words):**"
+                                f"**Run {i+1} ({param_analysis_times[i]:.3f}s, {len(param_analysis_contents[i].split())} words):**"
                             ),
-                            mo.md(f"*Content:* {contents[i][:100]}..."),
-                            mo.md(f"*Tone:* {results[i].tone_analysis}"),
+                            mo.md(f"*Content:* {param_analysis_contents[i][:100]}..."),
+                            mo.md(f"*Tone:* {param_analysis_results[i].tone_analysis}"),
                             mo.md("---"),
                         ]
                     )
-                    for i in range(min(3, len(results)))
+                    for i in range(min(3, len(param_analysis_results)))
                 ]
                 + [
                     mo.md(
-                        """
-### 💡 Parameter Impact Observations
+                        cleandoc(
+                            """
+                            ### 💡 Parameter Impact Observations
 
-**Temperature Effects:**
-- **Low (0.1-0.3):** More consistent, predictable output
-- **Medium (0.4-0.7):** Balanced creativity and coherence  
-- **High (0.8-1.0):** More creative but potentially inconsistent
+                            **Model Effects:**
+                            - **Different models:** Varying capabilities and response styles
+                            - **Provider differences:** Performance and cost variations
+                            - **High (0.8-1.0):** More creative but potentially inconsistent
 
-**Max Tokens Effects:**
-- **Low (50-100):** Concise but may cut off content
-- **Medium (150-300):** Good balance for most tasks
-- **High (500+):** Allows full expression but slower
+                            **Max Tokens Effects:**
+                            - **Low (50-100):** Concise but may cut off content
+                            - **Medium (150-300):** Good balance for most tasks
+                            - **High (500+):** Allows full expression but slower
 
-**Model Effects:**
-- **Smaller models:** Faster but less sophisticated
-- **Larger models:** Better quality but slower and more expensive
-                """
+                            **Model Effects:**
+                            - **Smaller models:** Faster but less sophisticated
+                            - **Larger models:** Better quality but slower and more expensive
+                            """
+                        )
                     )
                 ]
             )
 
         except Exception as e:
-            mo.md(f"❌ **Parameter Test Error:** {str(e)}")
+            cell6_out = mo.md(f"❌ **Parameter Test Error:** {str(e)}")
+            param_analysis_params = None
     else:
-        mo.md(
+        cell6_out = mo.md(
             "*Adjust parameters above and click 'Test Parameter Impact' to see results*"
         )
-    return (
-        avg_length,
-        avg_time,
-        content_lengths,
-        contents,
-        execution_time,
-        num_runs,
-        params,
-        result,
-        results,
-        run,
-        start_time,
-        times,
-    )
+        avg_param_analysis_length = None
+        avg_param_analysis_time = None
+        param_analysis_params = None
+
+    output.replace(cell6_out)
+    return
 
 
 @app.cell
-def __(available_providers, dspy, mo):
+def _(available_providers, cleandoc, dspy, mo, output):
     if available_providers:
-        mo.md(
-            """
-        ## 🎯 Challenge 2: A/B Testing Framework
-        
-        **Task:** Compare two signature variations to determine which performs better.
-        
-        **Scenario:** Email subject line optimizer
-        - Version A: Simple optimization
-        - Version B: Advanced optimization with analysis
-        
-        We'll systematically compare their performance.
-        """
+        cell7_desc = mo.md(
+            cleandoc(
+                """
+                ## 🎯 Challenge 2: A/B Testing Framework
+
+                **Task:** Compare two signature variations to determine which performs better.
+
+                **Scenario:** Email subject line optimizer  
+                - Version A: Simple optimization  
+                - Version B: Advanced optimization with analysis  
+
+                We'll systematically compare their performance.
+                """
+            )
         )
 
         # Define two signature variations
@@ -365,36 +405,43 @@ def __(available_providers, dspy, mo):
         optimizer_a = dspy.Predict(EmailSubjectOptimizerA)
         optimizer_b = dspy.Predict(EmailSubjectOptimizerB)
 
-        mo.md(
-            """
-        ### 📧 Email Subject Optimizers Created
-        
-        **Version A (Simple):**
-        - 2 inputs, 2 outputs
-        - Basic optimization approach
-        - Faster execution expected
-        
-        **Version B (Advanced):**
-        - 3 inputs, 4 outputs  
-        - Comprehensive analysis
-        - More detailed but slower
-        """
+        cell7_content = mo.md(
+            cleandoc(
+                """
+                ### 📧 Email Subject Optimizers Created
+
+                **Version A (Simple):**  
+                - 2 inputs, 2 outputs  
+                - Basic optimization approach  
+                - Faster execution expected  
+
+                **Version B (Advanced):**  
+                - 3 inputs, 4 outputs  
+                - Comprehensive analysis  
+                - More detailed but slower  
+                """
+            )
         )
     else:
+        cell7_desc = mo.md("")
         EmailSubjectOptimizerA = None
         EmailSubjectOptimizerB = None
         optimizer_a = None
         optimizer_b = None
-    return (
-        EmailSubjectOptimizerA,
-        EmailSubjectOptimizerB,
-        optimizer_a,
-        optimizer_b,
+        cell7_content = mo.md("")
+
+    cell7_out = mo.vstack(
+        [
+            cell7_desc,
+            cell7_content,
+        ]
     )
+    output.replace(cell7_out)
+    return optimizer_a, optimizer_b
 
 
 @app.cell
-def __(available_providers, mo):
+def _(available_providers, mo, output):
     if available_providers:
         # A/B test cases
         ab_test_cases = [
@@ -416,9 +463,9 @@ def __(available_providers, mo):
         ]
 
         # A/B test execution button
-        run_ab_test = mo.ui.button(label="⚖️ Run A/B Test Comparison")
+        run_ab_test = mo.ui.run_button(label="⚖️ Run A/B Test Comparison")
 
-        mo.vstack(
+        cell8_out = mo.vstack(
             [
                 mo.md("### 🧪 A/B Test Cases Ready"),
                 mo.md(f"- {len(ab_test_cases)} diverse email scenarios"),
@@ -430,16 +477,21 @@ def __(available_providers, mo):
     else:
         ab_test_cases = None
         run_ab_test = None
+        cell8_out = mo.md("")
+
+    output.replace(cell8_out)
     return ab_test_cases, run_ab_test
 
 
 @app.cell
-def __(
+def _(
     ab_test_cases,
     available_providers,
+    cleandoc,
     mo,
     optimizer_a,
     optimizer_b,
+    output,
     run_ab_test,
     time,
 ):
@@ -449,27 +501,27 @@ def __(
             a_times = []
             b_times = []
 
-            for i, test_case in enumerate(ab_test_cases):
+            for i, ab_test_case in enumerate(ab_test_cases):
                 # Test Version A
-                start_time = time.time()
+                ab_start_time = time.time()
                 result_a = optimizer_a(
-                    original_subject=test_case["original_subject"],
-                    target_audience=test_case["target_audience"],
+                    original_subject=ab_test_case["original_subject"],
+                    target_audience=ab_test_case["target_audience"],
                 )
-                time_a = time.time() - start_time
+                time_a = time.time() - ab_start_time
                 a_times.append(time_a)
 
                 # Test Version B
                 start_time = time.time()
-                result_b = optimizer_b(**test_case)  # Uses all fields
+                result_b = optimizer_b(**ab_test_case)  # Uses all fields
                 time_b = time.time() - start_time
                 b_times.append(time_b)
 
                 ab_results.append(
                     {
                         "test_case": i + 1,
-                        "original": test_case["original_subject"],
-                        "audience": test_case["target_audience"],
+                        "original": ab_test_case["original_subject"],
+                        "audience": ab_test_case["target_audience"],
                         "result_a": result_a,
                         "time_a": time_a,
                         "result_b": result_b,
@@ -482,105 +534,101 @@ def __(
             avg_time_b = sum(b_times) / len(b_times)
 
             # Display A/B test results
-            comparison_details = []
-            for result in ab_results:
-                comparison_details.append(
-                    f"""
-**Test {result['test_case']}:** "{result['original']}" → {result['audience']}
+            ab_comparison_details = []
+            for ab_result in ab_results:
+                ab_comparison_details.append(
+                    cleandoc(
+                        f"""
+                        **Test {ab_result['test_case']}:** "{ab_result['original']}" → {ab_result['audience']}
 
-**Version A ({result['time_a']:.3f}s):**
-- Optimized: "{result['result_a'].optimized_subject}"
-- Reason: {result['result_a'].improvement_reason}
+                        **Version A ({ab_result['time_a']:.3f}s):**
+                        - Optimized: "{ab_result['result_a'].optimized_subject}"
+                        - Reason: {ab_result['result_a'].improvement_reason}
 
-**Version B ({result['time_b']:.3f}s):**
-- Primary: "{result['result_b'].optimized_subject}"
-- Alternatives: {result['result_b'].alternative_subjects}
-- Analysis: {result['result_b'].analysis}
-- Predicted improvement: {result['result_b'].predicted_improvement}
-"""
+                        **Version B ({ab_result['time_b']:.3f}s):**
+                        - Primary: "{ab_result['result_b'].optimized_subject}"
+                        - Alternatives: {ab_result['result_b'].alternative_subjects}
+                        - Analysis: {ab_result['result_b'].analysis}
+                        - Predicted improvement: {ab_result['result_b'].predicted_improvement}
+                        """
+                    )
                 )
 
-            mo.vstack(
+            cell9_out = mo.vstack(
                 [
                     mo.md("## ⚖️ A/B Test Results: Email Subject Optimization"),
                     mo.md("### 📊 Performance Comparison"),
                     mo.md(
-                        f"""
-**Speed Analysis:**
-- Version A average: {avg_time_a:.3f} seconds
-- Version B average: {avg_time_b:.3f} seconds  
-- Speed difference: {((avg_time_b - avg_time_a) / avg_time_a * 100):.1f}% slower for Version B
+                        cleandoc(
+                            f"""
+                            **Speed Analysis:**
+                            - Version A average: {avg_time_a:.3f} seconds
+                            - Version B average: {avg_time_b:.3f} seconds
+                            - Speed difference: {((avg_time_b - avg_time_a) / avg_time_a * 100):.1f}% slower for Version B
 
-**Quality Analysis:**
-- Version A: Simple, focused optimization
-- Version B: Comprehensive analysis with alternatives
-- Version B provides more actionable insights
-                """
+                            **Quality Analysis:**
+                            - Version A: Simple, focused optimization
+                            - Version B: Comprehensive analysis with alternatives
+                            - Version B provides more actionable insights
+                            """
+                        )
                     ),
                     mo.md("### 🔍 Detailed A/B Comparison"),
-                    mo.md("\n".join(comparison_details)),
+                    mo.md("\n".join(ab_comparison_details)),
                     mo.md(
-                        """
-### 🎯 A/B Test Insights
+                        cleandoc(
+                            """
+                            ### 🎯 A/B Test Insights
 
-**Version A Advantages:**
-- ⚡ Faster execution (better for high volume)
-- 🎯 Simple, focused output
-- 💰 Lower computational cost
+                            **Version A Advantages:**  
+                            - ⚡ Faster execution (better for high volume)  
+                            - 🎯 Simple, focused output  
+                            - 💰 Lower computational cost  
 
-**Version B Advantages:**
-- 🧠 More comprehensive analysis
-- 🎨 Multiple creative options
-- 📊 Quantitative predictions
-- 🔍 Better for optimization learning
+                            **Version B Advantages:**  
+                            - 🧠 More comprehensive analysis  
+                            - 🎨 Multiple creative options  
+                            - 📊 Quantitative predictions  
+                            - 🔍 Better for optimization learning  
 
-**Recommendation:**
-- Use Version A for high-volume, real-time optimization
-- Use Version B for strategic campaigns and learning
-                """
+                            **Recommendation:**  
+                            - Use Version A for high-volume, real-time optimization  
+                            - Use Version B for strategic campaigns and learning  
+                            """
+                        )
                     ),
                 ]
             )
 
         except Exception as e:
-            mo.md(f"❌ **A/B Test Error:** {str(e)}")
+            cell9_out = mo.md(f"❌ **A/B Test Error:** {str(e)}")
     else:
-        mo.md(
+        cell9_out = mo.md(
             "*Click 'Run A/B Test Comparison' to see signature performance comparison*"
         )
-    return (
-        a_times,
-        ab_results,
-        avg_time_a,
-        avg_time_b,
-        b_times,
-        comparison_details,
-        result,
-        result_a,
-        result_b,
-        start_time,
-        test_case,
-        time_a,
-        time_b,
-    )
+
+    output.replace(cell9_out)
+    return
 
 
 @app.cell
-def __(available_providers, dspy, mo):
+def _(available_providers, cleandoc, dspy, mo, output):
     if available_providers:
-        mo.md(
-            """
-        ## 🎯 Challenge 3: Iterative Signature Improvement
-        
-        **Task:** Systematically improve a signature through multiple iterations.
-        
-        **Base Signature:** Product review analyzer
-        - Start with basic version
-        - Apply optimization principles
-        - Measure improvement at each step
-        
-        This demonstrates real-world optimization workflows.
-        """
+        cell10_desc = mo.md(
+            cleandoc(
+                """
+                ## 🎯 Challenge 3: Iterative Signature Improvement
+
+                **Task:** Systematically improve a signature through multiple iterations.
+
+                **Base Signature:** Product review analyzer  
+                - Start with basic version  
+                - Apply optimization principles  
+                - Measure improvement at each step  
+
+                This demonstrates real-world optimization workflows.
+                """
+            )
         )
 
         # Define signature iterations
@@ -637,36 +685,41 @@ def __(available_providers, dspy, mo):
         analyzer_v2 = dspy.Predict(ProductReviewAnalyzerV2)
         analyzer_v3 = dspy.Predict(ProductReviewAnalyzerV3)
 
-        mo.md(
-            """
-        ### 📱 Product Review Analyzer Versions Created
-        
-        **V1 (Basic):** 1 input, 2 outputs - Minimal functionality
-        **V2 (Improved):** 2 inputs, 3 outputs - Added context and detail
-        **V3 (Advanced):** 3 inputs, 5 outputs - Comprehensive analysis
-        
-        Let's test the evolution of signature quality!
-        """
+        cell10_content = mo.md(
+            cleandoc(
+                """
+                ### 📱 Product Review Analyzer Versions Created
+
+                **V1 (Basic):** 1 input, 2 outputs - Minimal functionality
+                **V2 (Improved):** 2 inputs, 3 outputs - Added context and detail
+                **V3 (Advanced):** 3 inputs, 5 outputs - Comprehensive analysis
+
+                Let's test the evolution of signature quality!
+                """
+            )
         )
     else:
+        cell10_desc = mo.md("")
         ProductReviewAnalyzerV1 = None
         ProductReviewAnalyzerV2 = None
         ProductReviewAnalyzerV3 = None
         analyzer_v1 = None
         analyzer_v2 = None
         analyzer_v3 = None
-    return (
-        ProductReviewAnalyzerV1,
-        ProductReviewAnalyzerV2,
-        ProductReviewAnalyzerV3,
-        analyzer_v1,
-        analyzer_v2,
-        analyzer_v3,
+        cell10_content = mo.md("")
+
+    cell10_out = mo.vstack(
+        [
+            cell10_desc,
+            cell10_content,
+        ]
     )
+    output.replace(cell10_out)
+    return analyzer_v1, analyzer_v2, analyzer_v3
 
 
 @app.cell
-def __(available_providers, mo):
+def _(available_providers, mo, output):
     if available_providers:
         # Test case for iterative improvement
         improvement_test_case = {
@@ -676,9 +729,9 @@ def __(available_providers, mo):
         }
 
         # Iterative improvement test button
-        run_improvement_test = mo.ui.button(label="📈 Test Iterative Improvements")
+        run_improvement_test = mo.ui.run_button(label="📈 Test Iterative Improvements")
 
-        mo.vstack(
+        cell11_out = mo.vstack(
             [
                 mo.md("### 🎧 Test Case: Wireless Headphones Review"),
                 mo.md(f"**Review:** {improvement_test_case['review_text'][:100]}..."),
@@ -689,17 +742,22 @@ def __(available_providers, mo):
     else:
         improvement_test_case = None
         run_improvement_test = None
+        cell11_out = mo.md("")
+
+    output.replace(cell11_out)
     return improvement_test_case, run_improvement_test
 
 
 @app.cell
-def __(
+def _(
     analyzer_v1,
     analyzer_v2,
     analyzer_v3,
     available_providers,
+    cleandoc,
     improvement_test_case,
     mo,
+    output,
     run_improvement_test,
     time,
 ):
@@ -709,34 +767,36 @@ def __(
             versions = []
 
             # V1 Test (basic inputs only)
-            start_time = time.time()
+            start_time_v1 = time.time()
             result_v1 = analyzer_v1(review_text=improvement_test_case["review_text"])
-            time_v1 = time.time() - start_time
+            time_v1 = time.time() - start_time_v1
             versions.append(("V1 (Basic)", result_v1, time_v1, 2))
 
             # V2 Test
-            start_time = time.time()
+            start_time_v2 = time.time()
             result_v2 = analyzer_v2(
                 review_text=improvement_test_case["review_text"],
                 product_category=improvement_test_case["product_category"],
             )
-            time_v2 = time.time() - start_time
+            time_v2 = time.time() - start_time_v2
             versions.append(("V2 (Improved)", result_v2, time_v2, 3))
 
             # V3 Test
-            start_time = time.time()
+            start_time_v3 = time.time()
             result_v3 = analyzer_v3(**improvement_test_case)
-            time_v3 = time.time() - start_time
+            time_v3 = time.time() - start_time_v3
             versions.append(("V3 (Advanced)", result_v3, time_v3, 5))
 
             # Display iterative improvement results
             improvement_details = []
-            for version_name, result, exec_time, output_count in versions:
+            for version_name, version_result, exec_time, output_count in versions:
                 improvement_details.append(
-                    f"""
-**{version_name} ({exec_time:.3f}s, {output_count} outputs):**
-{result}
-"""
+                    cleandoc(
+                        f"""
+                        **{version_name} ({exec_time:.3f}s, {output_count} outputs):**
+                        {version_result}
+                        """
+                    )
                 )
 
             # Calculate improvement metrics
@@ -747,147 +807,173 @@ def __(
                 (v[2] - versions[0][2]) / versions[0][2] * 100 for v in versions[1:]
             ]
 
-            mo.vstack(
+            cell12_out = mo.vstack(
                 [
                     mo.md("## 📈 Iterative Improvement Results"),
                     mo.md("### 🔄 Version Evolution"),
                     mo.md("\n".join(improvement_details)),
                     mo.md("### 📊 Improvement Metrics"),
                     mo.md(
-                        f"""
-**Complexity Growth:**
-- V2 vs V1: {complexity_increase[0]:.1f}% more outputs
-- V3 vs V1: {complexity_increase[1]:.1f}% more outputs
+                        cleandoc(
+                            f"""
+                            **Complexity Growth:**
+                            - V2 vs V1: {complexity_increase[0]:.1f}% more outputs
+                            - V3 vs V1: {complexity_increase[1]:.1f}% more outputs
 
-**Performance Impact:**
-- V2 vs V1: {time_increase[0]:.1f}% time increase
-- V3 vs V1: {time_increase[1]:.1f}% time increase
+                            **Performance Impact:**
+                            - V2 vs V1: {time_increase[0]:.1f}% time increase
+                            - V3 vs V1: {time_increase[1]:.1f}% time increase
 
-**Quality Assessment:**
-- V1: Basic sentiment and rating
-- V2: Added context and key points
-- V3: Comprehensive analysis with actionable insights
-                """
+                            **Quality Assessment:**
+                            - V1: Basic sentiment and rating
+                            - V2: Added context and key points
+                            - V3: Comprehensive analysis with actionable insights
+                            """
+                        )
                     ),
                     mo.md(
-                        """
-### 🎯 Iterative Improvement Insights
+                        cleandoc(
+                            """
+                            ### 🎯 Iterative Improvement Insights
 
-**Optimization Strategy:**
-1. **Start Simple** - V1 provides baseline functionality
-2. **Add Context** - V2 improves accuracy with product category
-3. **Enhance Output** - V3 provides comprehensive business value
+                            **Optimization Strategy:**  
+                            1. **Start Simple** - V1 provides baseline functionality  
+                            2. **Add Context** - V2 improves accuracy with product category  
+                            3. **Enhance Output** - V3 provides comprehensive business value  
 
-**Trade-off Analysis:**
-- Each iteration adds ~50-100% more processing time
-- Quality improvements are substantial and measurable
-- V3 provides business-actionable insights worth the cost
+                            **Trade-off Analysis:**  
+                            - Each iteration adds ~50-100% more processing time  
+                            - Quality improvements are substantial and measurable  
+                            - V3 provides business-actionable insights worth the cost  
 
-**Production Recommendations:**
-- Use V1 for high-volume, basic sentiment analysis
-- Use V2 for balanced performance and insight
-- Use V3 for strategic analysis and product improvement
-                """
+                            **Production Recommendations:**  
+                            - Use V1 for high-volume, basic sentiment analysis  
+                            - Use V2 for balanced performance and insight  
+                            - Use V3 for strategic analysis and product improvement  
+                            """
+                        )
                     ),
                 ]
             )
 
         except Exception as e:
-            mo.md(f"❌ **Improvement Test Error:** {str(e)}")
+            cell12_out = mo.md(f"❌ **Improvement Test Error:** {str(e)}")
     else:
-        mo.md(
+        cell12_out = mo.md(
             "*Click 'Test Iterative Improvements' to see signature evolution results*"
         )
-    return (
-        complexity_increase,
-        exec_time,
-        improvement_details,
-        output_count,
-        result,
-        result_v1,
-        result_v2,
-        result_v3,
-        start_time,
-        time_increase,
-        time_v1,
-        time_v2,
-        time_v3,
-        version_name,
-        versions,
-    )
+
+    output.replace(cell12_out)
+    return
 
 
 @app.cell
-def __(available_providers, mo):
+def _(available_providers, cleandoc, mo, output):
     if available_providers:
-        mo.md(
-            """
-        ## 🎯 Challenge 4: Production Optimization Strategy
-        
-        **Task:** Develop a comprehensive optimization strategy for production deployment.
-        
-        **Scenario:** You need to deploy a signature for a high-traffic application.
-        Consider all optimization factors and make strategic decisions.
-        """
+        cell13_desc = mo.md(
+            cleandoc(
+                """
+                ## 🎯 Challenge 4: Production Optimization Strategy
+
+                **Task:** Develop a comprehensive optimization strategy for production deployment.
+
+                **Scenario:** You need to deploy a signature for a high-traffic application.
+                Consider all optimization factors and make strategic decisions.
+                """
+            )
         )
 
         # Production optimization form
-        production_form = mo.ui.form(
-            {
-                "use_case": mo.ui.dropdown(
-                    options=[
-                        "Real-time chat moderation (1000+ req/min)",
-                        "Email marketing optimization (100 req/min)",
-                        "Document analysis service (10 req/min)",
-                        "Creative content generation (1 req/min)",
-                    ],
-                    label="Production Use Case",
-                    value="Email marketing optimization (100 req/min)",
-                ),
-                "priority": mo.ui.radio(
-                    options=["Speed", "Quality", "Cost", "Balanced"],
-                    label="Primary Optimization Priority",
-                    value="Balanced",
-                ),
-                "budget": mo.ui.dropdown(
-                    options=[
-                        "Low ($100/month)",
-                        "Medium ($500/month)",
-                        "High ($2000/month)",
-                        "Enterprise",
-                    ],
-                    label="Budget Constraints",
-                    value="Medium ($500/month)",
-                ),
-                "accuracy_requirement": mo.ui.slider(
-                    min=70, max=99, value=85, label="Minimum Accuracy Requirement (%)"
-                ),
-                "analyze": mo.ui.button(label="🎯 Generate Optimization Strategy"),
-            }
+        production_use_case = mo.ui.dropdown(
+            options=[
+                "Real-time chat moderation (1000+ req/min)",
+                "Email marketing optimization (100 req/min)",
+                "Document analysis service (10 req/min)",
+                "Creative content generation (1 req/min)",
+            ],
+            label="Production Use Case",
+            value="Email marketing optimization (100 req/min)",
         )
+        production_priority = mo.ui.radio(
+            options=["Speed", "Quality", "Cost", "Balanced"],
+            label="Primary Optimization Priority",
+            value="Balanced",
+        )
+        production_budget = mo.ui.dropdown(
+            options=[
+                "Low ($100/month)",
+                "Medium ($500/month)",
+                "High ($2000/month)",
+                "Enterprise",
+            ],
+            label="Budget Constraints",
+            value="Medium ($500/month)",
+        )
+        production_accuracy = mo.ui.slider(
+            start=70,
+            stop=99,
+            value=85,
+            label="Minimum Accuracy Requirement (%)",
+        )
+        production_analyze = mo.ui.run_button(label="🎯 Generate Optimization Strategy")
 
-        mo.vstack(
+        cell13_content = mo.vstack(
             [
                 mo.md("### 🏭 Production Optimization Planner"),
                 mo.md(
                     "Define your production requirements to get a customized optimization strategy:"
                 ),
-                production_form,
+                production_use_case,
+                production_priority,
+                production_budget,
+                production_accuracy,
+                production_analyze,
             ]
         )
     else:
-        production_form = None
-    return (production_form,)
+        cell13_desc = mo.md("")
+        production_use_case = None
+        production_priority = None
+        production_budget = None
+        production_accuracy = None
+        production_analyze = None
+        cell13_content = mo.md("")
+
+    cell13_out = mo.vstack(
+        [
+            cell13_desc,
+            cell13_content,
+        ]
+    )
+    output.replace(cell13_out)
+    return (
+        production_accuracy,
+        production_analyze,
+        production_budget,
+        production_priority,
+        production_use_case,
+    )
 
 
 @app.cell
-def __(available_providers, mo, production_form):
-    if (
-        available_providers
-        and production_form.value
-        and production_form.value["analyze"]
-    ):
-        form_data = production_form.value
+def _(
+    available_providers,
+    cleandoc,
+    mo,
+    output,
+    production_accuracy,
+    production_analyze,
+    production_budget,
+    production_priority,
+    production_use_case,
+):
+    if available_providers and production_analyze.value:
+        form_data = {
+            "use_case": production_use_case.value,
+            "priority": production_priority.value,
+            "budget": production_budget.value,
+            "accuracy_requirement": production_accuracy.value,
+        }
 
         # Generate optimization strategy based on inputs
         use_case = form_data["use_case"]
@@ -954,166 +1040,164 @@ def __(available_providers, mo, production_form):
                 "Performance monitoring and adjustment",
             ]
 
-        mo.vstack(
+        cell14_out = mo.vstack(
             [
                 mo.md("## 🎯 Production Optimization Strategy"),
                 mo.md(
-                    f"""
-### 📋 Your Requirements Analysis
-- **Use Case:** {use_case}
-- **Volume:** {volume}
-- **Priority:** {priority}
-- **Budget:** {budget}
-- **Accuracy Target:** {accuracy}%
+                    cleandoc(
+                        f"""
+                        ### 📋 Your Requirements Analysis
+                        - **Use Case:** {use_case}
+                        - **Volume:** {volume}
+                        - **Priority:** {priority}
+                        - **Budget:** {budget}
+                        - **Accuracy Target:** {accuracy}%
 
-### 🏗️ Recommended Architecture
-**Module Selection:** {recommended_module}
-**Model Strategy:** {model_recommendation}
-**Infrastructure:** {infrastructure}
-**Caching:** {caching_strategy}
-            """
+                        ### 🏗️ Recommended Architecture
+                        **Module Selection:** {recommended_module}
+                        **Model Strategy:** {model_recommendation}
+                        **Infrastructure:** {infrastructure}
+                        **Caching:** {caching_strategy}
+                        """
+                    )
                 ),
                 mo.md("### 🔧 Optimization Strategies"),
                 mo.md("\n".join([f"- {opt}" for opt in optimizations])),
                 mo.md(
-                    f"""
-### 📊 Implementation Roadmap
+                    cleandoc(
+                        f"""
+                        ### 📊 Implementation Roadmap
 
-**Phase 1: Foundation (Week 1-2)**
-1. Implement basic signature with {recommended_module}
-2. Set up monitoring and logging
-3. Deploy with basic caching
-4. Establish baseline metrics
+                        **Phase 1: Foundation (Week 1-2)**
+                        1. Implement basic signature with {recommended_module}
+                        2. Set up monitoring and logging
+                        3. Deploy with basic caching
+                        4. Establish baseline metrics
 
-**Phase 2: Optimization (Week 3-4)**
-1. A/B test different parameter settings
-2. Implement advanced caching strategies
-3. Optimize for your {priority.lower()} priority
-4. Fine-tune based on real traffic
+                        **Phase 2: Optimization (Week 3-4)**
+                        1. A/B test different parameter settings
+                        2. Implement advanced caching strategies
+                        3. Optimize for your {priority.lower()} priority
+                        4. Fine-tune based on real traffic
 
-**Phase 3: Scaling (Week 5-6)**
-1. Implement auto-scaling based on demand
-2. Add performance monitoring dashboards
-3. Set up alerting for quality degradation
-4. Plan for capacity growth
+                        **Phase 3: Scaling (Week 5-6)**
+                        1. Implement auto-scaling based on demand
+                        2. Add performance monitoring dashboards
+                        3. Set up alerting for quality degradation
+                        4. Plan for capacity growth
 
-### 🎯 Success Metrics
-- **Response Time:** < {2.0 if priority == "Speed" else 5.0 if priority == "Balanced" else 10.0} seconds
-- **Accuracy:** > {accuracy}%
-- **Uptime:** > 99.9%
-- **Cost per Request:** < ${0.01 if "Low" in budget else 0.05 if "Medium" in budget else 0.20}
+                        ### 🎯 Success Metrics
+                        - **Response Time:** < {2.0 if priority == "Speed" else 5.0 if priority == "Balanced" else 10.0} seconds
+                        - **Accuracy:** > {accuracy}%
+                        - **Uptime:** > 99.9%
+                        - **Cost per Request:** < ${0.01 if "Low" in budget else 0.05 if "Medium" in budget else 0.20}
 
-### ⚠️ Risk Mitigation
-- Implement circuit breakers for API failures
-- Set up fallback responses for edge cases
-- Monitor for prompt injection attacks
-- Regular model performance reviews
-            """
+                        ### ⚠️ Risk Mitigation
+                        - Implement circuit breakers for API failures
+                        - Set up fallback responses for edge cases
+                        - Monitor for prompt injection attacks
+                        - Regular model performance reviews
+                        """
+                    )
                 ),
             ]
         )
     else:
-        mo.md(
+        cell14_out = mo.md(
             "*Complete the production requirements form above to get your optimization strategy*"
         )
-    return (
-        accuracy,
-        budget,
-        caching_strategy,
-        form_data,
-        infrastructure,
-        model_recommendation,
-        optimizations,
-        priority,
-        recommended_module,
-        use_case,
-        volume,
-    )
+
+    output.replace(cell14_out)
+    return
 
 
 @app.cell
-def __(available_providers, mo):
-    if available_providers:
-        mo.md(
+def _(available_providers, cleandoc, mo, output):
+    cell15_out = mo.md(
+        cleandoc(
             """
-        ## 🎓 Exercise 3 Complete!
-        
-        ### 🏆 What You've Mastered
-        
-        ✅ **Parameter Impact Analysis** - Understanding how settings affect performance
-        ✅ **A/B Testing Framework** - Systematic signature comparison methodology
-        ✅ **Iterative Improvement** - Step-by-step signature enhancement process
-        ✅ **Production Optimization** - Real-world deployment strategy development
-        ✅ **Performance Trade-offs** - Balancing speed, quality, and cost
-        
-        ### 🎯 Key Optimization Principles Learned
-        
-        1. **Parameter Tuning**
-           - Temperature controls creativity vs consistency
-           - Max tokens affects completeness and cost
-           - Model selection impacts quality and speed
-        
-        2. **A/B Testing**
-           - Systematic comparison reveals true performance differences
-           - Multiple metrics needed for comprehensive evaluation
-           - Statistical significance matters for decisions
-        
-        3. **Iterative Improvement**
-           - Start simple, add complexity gradually
-           - Measure impact of each change
-           - Balance feature additions with performance costs
-        
-        4. **Production Strategy**
-           - Volume requirements drive architecture decisions
-           - Budget constraints shape model and infrastructure choices
-           - Monitoring and alerting are essential for reliability
-        
-        ### 📊 Optimization Decision Matrix
-        
-        | Scenario | Module Choice | Key Optimizations |
-        |----------|---------------|-------------------|
-        | **High Volume** | Predict | Caching, fast models, simple prompts |
-        | **High Quality** | ChainOfThought | Premium models, validation, review |
-        | **Low Budget** | Predict | Efficient models, smart caching |
-        | **Balanced** | Hybrid | Context-aware module selection |
-        
-        ### 🚀 Ready for Advanced Modules?
-        
-        You now have solid optimization skills! Time to explore advanced DSPy capabilities:
-        
-        **Next Module:**
-        ```bash
-        uv run marimo run 02-advanced-modules/react_implementation.py
-        ```
-        
-        **Coming Up:**
-        - ReAct (Reasoning + Acting) modules
-        - Tool integration with external APIs
-        - Multi-step reasoning pipelines
-        - Advanced debugging and tracing
-        
-        ### 🎯 Advanced Optimization Challenges
-        
-        Before moving on, try optimizing signatures for:
-        1. **Multi-language Support** - Optimize for different languages
-        2. **Domain Adaptation** - Tune for specific industries
-        3. **Edge Case Handling** - Optimize for unusual inputs
-        4. **Batch Processing** - Optimize for bulk operations
-        
-        ### 💡 Production Checklist
-        
-        When deploying optimized signatures:
-        - [ ] Baseline performance metrics established
-        - [ ] A/B testing framework implemented
-        - [ ] Monitoring and alerting configured
-        - [ ] Fallback strategies defined
-        - [ ] Cost monitoring and budgets set
-        - [ ] Security and prompt injection protection
-        - [ ] Regular performance review schedule
-        
-        Master these optimization techniques and your DSPy systems will perform at their peak!
-        """
+                ## 🎓 Exercise 3 Complete!
+
+                ### 🏆 What You've Mastered
+
+                ✅ **Parameter Impact Analysis** - Understanding how settings affect performance  
+                ✅ **A/B Testing Framework** - Systematic signature comparison methodology  
+                ✅ **Iterative Improvement** - Step-by-step signature enhancement process  
+                ✅ **Production Optimization** - Real-world deployment strategy development  
+                ✅ **Performance Trade-offs** - Balancing speed, quality, and cost  
+
+                ### 🎯 Key Optimization Principles Learned
+
+                1. **Parameter Tuning**
+                    - Model selection affects quality and capabilities
+                    - Provider choice impacts performance and cost
+                    - Model selection impacts quality and speed
+
+                2. **A/B Testing**
+                    - Systematic comparison reveals true performance differences
+                    - Multiple metrics needed for comprehensive evaluation
+                    - Statistical significance matters for decisions
+
+                3. **Iterative Improvement**
+                    - Start simple, add complexity gradually
+                    - Measure impact of each change
+                    - Balance feature additions with performance costs
+
+                4. **Production Strategy**
+                    - Volume requirements drive architecture decisions
+                    - Budget constraints shape model and infrastructure choices
+                    - Monitoring and alerting are essential for reliability
+
+                ### 📊 Optimization Decision Matrix
+
+                | Scenario | Module Choice | Key Optimizations |
+                |----------|---------------|-------------------|
+                | **High Volume** | Predict | Caching, fast models, simple prompts |
+                | **High Quality** | ChainOfThought | Premium models, validation, review |
+                | **Low Budget** | Predict | Efficient models, smart caching |
+                | **Balanced** | Hybrid | Context-aware module selection |
+
+                ### 🚀 Ready for Advanced Modules?
+
+                You now have solid optimization skills! Time to explore advanced DSPy capabilities:
+
+                **Next Module:**  
+                ```bash
+                uv run marimo run 02-advanced-modules/react_implementation.py
+                ```
+
+                **Coming Up:**  
+                - ReAct (Reasoning + Acting) modules  
+                - Tool integration with external APIs  
+                - Multi-step reasoning pipelines  
+                - Advanced debugging and tracing  
+
+                ### 🎯 Advanced Optimization Challenges
+
+                Before moving on, try optimizing signatures for:  
+                1. **Multi-language Support** - Optimize for different languages  
+                2. **Domain Adaptation** - Tune for specific industries  
+                3. **Edge Case Handling** - Optimize for unusual inputs  
+                4. **Batch Processing** - Optimize for bulk operations  
+
+                ### 💡 Production Checklist
+
+                When deploying optimized signatures:
+                - [ ] Baseline performance metrics established
+                - [ ] A/B testing framework implemented
+                - [ ] Monitoring and alerting configured
+                - [ ] Fallback strategies defined
+                - [ ] Cost monitoring and budgets set
+                - [ ] Security and prompt injection protection
+                - [ ] Regular performance review schedule
+
+                Master these optimization techniques and your DSPy systems will perform at their peak!
+                """
         )
+        if available_providers
+        else ""
+    )
+    output.replace(cell15_out)
     return
 
 

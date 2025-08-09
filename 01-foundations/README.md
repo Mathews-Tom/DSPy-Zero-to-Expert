@@ -20,8 +20,27 @@
 
 ## Files in this Module
 
-- `signatures_basics.py` - Interactive signature builder
-- `module_comparison.py` - Predict vs ChainOfThought comparison
-- `interactive_signature_tester.py` - Real-time signature testing
-- `exercises/` - Practical signature exercises
-- `solutions/` - Reference solutions
+Work through these notebooks in the following order:
+
+1. **`signatures_basics.py`** - DSPy Signatures fundamentals and design patterns
+   - Learn the core DSPy programming model through Signatures
+   - Master inline vs class-based signature patterns
+   - Build sophisticated signature designs with best practices
+   - Understand signature composition for complex tasks
+
+2. **`module_comparison.py`** - DSPy module types and performance analysis
+   - Compare Predict vs ChainOfThought vs other DSPy modules
+   - Analyze performance characteristics (speed, quality, consistency)
+   - Understand trade-offs and when to use each module type
+   - Build systematic evaluation workflows for module selection
+
+3. **`interactive_signature_tester.py`** - Real-time signature testing and validation
+   - Build interactive testing interfaces with Marimo UI elements
+   - Implement real-time parameter tuning and validation
+   - Create comprehensive signature testing workflows
+   - Master systematic debugging and optimization techniques
+
+### Additional Resources
+
+- **`exercises/`** - Practical signature exercises for hands-on learning
+- **`solutions/`** - Reference solutions and implementation examples
