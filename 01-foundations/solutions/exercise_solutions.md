@@ -118,7 +118,7 @@ class MeetingMinutesGenerator(dspy.Signature):
 
 **Performance Patterns:**
 
-```
+```text
 Spam Detection Results:
 - Predict: 0.8s average, 95% accuracy
 - ChainOfThought: 2.1s average, 96% accuracy
@@ -136,7 +136,7 @@ Spam Detection Results:
 
 **Performance Patterns:**
 
-```
+```text
 Financial Analysis Results:
 - Predict: 1.2s average, good insights
 - ChainOfThought: 3.5s average, comprehensive analysis
@@ -154,7 +154,7 @@ Financial Analysis Results:
 
 **Performance Patterns:**
 
-```
+```text
 Math Problem Results:
 - Predict: 1.0s average, 70% accuracy
 - ChainOfThought: 2.8s average, 92% accuracy
@@ -187,9 +187,9 @@ Math Problem Results:
 
 ### Challenge 1: Parameter Impact Analysis
 
-**Temperature Effects:**
+**Model Effects:**
 
-- **Low (0.1-0.3):** Consistent, predictable output, less creative
+- **Different models:** Varying capabilities, response quality, and consistency
 - **Medium (0.4-0.7):** Balanced creativity and coherence
 - **High (0.8-1.0):** More creative but potentially inconsistent
 
@@ -208,7 +208,7 @@ Math Problem Results:
 
 **Version A vs Version B Analysis:**
 
-```
+```text
 Email Subject Optimization:
 Version A (Simple):
 - Speed: 0.8s average
@@ -232,7 +232,7 @@ Version B (Advanced):
 
 **Version Evolution Analysis:**
 
-```
+```text
 Product Review Analyzer Evolution:
 V1: Basic (1 input, 2 outputs) - 0.9s
 V2: Improved (2 inputs, 3 outputs) - 1.4s (+56%)
@@ -311,8 +311,8 @@ Business value: V3 provides actionable insights
 ### Optimization Strategies
 
 1. **Parameter Tuning**
-   - Test temperature ranges systematically
-   - Optimize max_tokens for your use case
+   - Test different models systematically
+   - Choose providers based on your requirements
    - Choose models based on requirements
 
 2. **A/B Testing**

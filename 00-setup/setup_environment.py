@@ -12,12 +12,10 @@ This script automates the environment configuration process, including:
 import logging
 import os
 import sys
+from inspect import cleandoc
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
 
-# Add the project root to the path so we can import common utilities
-project_root = Path(__file__).parent.parent
-sys.path.insert(0, str(project_root))
+import dspy
 
 from common import (
     configure_dspy_lm,
@@ -26,6 +24,10 @@ from common import (
     setup_logging,
     validate_environment,
 )
+
+# Add the project root to the path so we can import common utilities
+project_root = Path(__file__).parent.parent
+sys.path.insert(0, str(project_root))
 
 # Set up logging
 setup_logging(level="INFO")
@@ -109,7 +111,7 @@ def check_env_file() -> bool:
         return False
 
 
-def setup_api_keys() -> Dict[str, bool]:
+def setup_api_keys() -> dict[str, bool]:
     """Guide user through API key setup and validation."""
     print_header("API Key Configuration")
 
@@ -176,7 +178,7 @@ def test_dspy_setup() -> bool:
         print_info(f"Available providers: {', '.join(available_providers)}")
 
         # Try to configure DSPy with the default provider
-        default_provider = config.default_llm_provider
+        default_provider = config.default_provider
         if default_provider not in available_providers:
             default_provider = available_providers[0]
             print_info(f"Using {default_provider} instead of configured default")
@@ -189,8 +191,6 @@ def test_dspy_setup() -> bool:
 
         # Test basic DSPy functionality
         print_info("Testing basic DSPy functionality...")
-
-        import dspy
 
         # Create a simple signature
         class TestSignature(dspy.Signature):
@@ -229,7 +229,11 @@ def test_marimo_setup() -> bool:
         import subprocess
 
         result = subprocess.run(
-            ["marimo", "--version"], capture_output=True, text=True, timeout=10
+            ["marimo", "--version"],
+            capture_output=True,
+            text=True,
+            timeout=10,
+            check=False,
         )
 
         if result.returncode == 0:
@@ -256,42 +260,44 @@ def create_sample_notebook() -> bool:
     """Create a sample Marimo notebook for testing."""
     print_header("Sample Notebook Creation")
 
-    sample_notebook_content = '''import marimo as mo
-import dspy
-from common import get_config, DSPyParameterPanel
+    sample_notebook_content = cleandoc(
+        '''import marimo as mo
+        import dspy
+        from common import get_config, DSPyParameterPanel
 
-# Configure DSPy
-config = get_config()
-available_providers = config.get_available_llm_providers()
+        # Configure DSPy
+        config = get_config()
+        available_providers = config.get_available_llm_providers()
 
-if available_providers:
-    from common import setup_dspy_environment
-    setup_dspy_environment()
-    
-    mo.md(f"""
-    # DSPy Environment Test
-    
-    ✅ **Environment configured successfully!**
-    
-    - Available LLM providers: {', '.join(available_providers)}
-    - Default provider: {config.default_llm_provider}
-    - Default model: {config.default_model}
-    
-    You can now proceed with the DSPy learning modules.
-    """)
-else:
-    mo.md("""
-    # ⚠️ Configuration Required
-    
-    Please configure at least one LLM provider in your `.env` file:
-    
-    - OpenAI: Set `OPENAI_API_KEY`
-    - Anthropic: Set `ANTHROPIC_API_KEY`  
-    - Cohere: Set `COHERE_API_KEY`
-    
-    Then restart this notebook.
-    """)
-'''
+        if available_providers:
+            from common import setup_dspy_environment
+            setup_dspy_environment()
+            
+            mo.md(f"""
+            # DSPy Environment Test
+            
+            ✅ **Environment configured successfully!**
+            
+            - Available LLM providers: {', '.join(available_providers)}
+            - Default provider: {config.default_provider}
+            - Default model: {config.default_model}
+            
+            You can now proceed with the DSPy learning modules.
+            """)
+        else:
+            mo.md("""
+            # ⚠️ Configuration Required
+            
+            Please configure at least one LLM provider in your `.env` file:
+            
+            - OpenAI: Set `OPENAI_API_KEY`
+            - Anthropic: Set `ANTHROPIC_API_KEY`  
+            - Cohere: Set `COHERE_API_KEY`
+            
+            Then restart this notebook.
+            """)
+        '''
+    )
 
     try:
         sample_file = Path("00-setup/environment_test.py")

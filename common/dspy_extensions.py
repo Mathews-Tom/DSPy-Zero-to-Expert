@@ -13,7 +13,7 @@ import time
 from contextlib import contextmanager
 from datetime import datetime
 from functools import wraps
-from typing import Any, Callable, Dict, List, Optional, Tuple, Type
+from typing import Any, Callable, Optional
 
 # Third-Party Library
 import dspy
@@ -218,7 +218,7 @@ class ReactiveModule:
 
             raise
 
-    def _create_cache_key(self, args: Tuple, kwargs: Dict) -> str:
+    def _create_cache_key(self, args: tuple, kwargs: dict) -> str:
         """Create a cache key from arguments."""
         try:
             key_data = {
@@ -236,7 +236,7 @@ class ReactiveModule:
         with self._lock:
             self.cache.clear()
 
-    def get_execution_stats(self) -> Dict[str, Any]:
+    def get_execution_stats(self) -> dict[str, Any]:
         """Get execution statistics."""
         with self._lock:
             if not self.execution_history:
@@ -293,7 +293,7 @@ class SignatureTester:
     Utility for testing DSPy signatures with various inputs and configurations.
     """
 
-    def __init__(self, signature: Type[dspy.Signature]):
+    def __init__(self, signature: type[dspy.Signature]):
         """
         Initialize the signature tester.
 
@@ -304,7 +304,7 @@ class SignatureTester:
         self.test_results = []
         self.predictor = dspy.Predict(signature)
 
-    def test_single(self, **inputs) -> Dict[str, Any]:
+    def test_single(self, **inputs) -> dict[str, Any]:
         """
         Test the signature with a single set of inputs.
 
@@ -347,15 +347,15 @@ class SignatureTester:
         self.test_results.append(test_result)
         return test_result
 
-    def test_batch(self, input_list: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    def test_batch(self, input_list: list[dict[str, Any]]) -> list[dict[str, Any]]:
         """
         Test the signature with multiple input sets.
 
         Args:
-            input_list: List of input dictionaries
+            input_list: list of input dictionaries
 
         Returns:
-            List of test results
+            list of test results
         """
         results = []
         progress = ProgressTracker(len(input_list), "Testing signature")
@@ -368,8 +368,8 @@ class SignatureTester:
         return results
 
     def test_variations(
-        self, base_inputs: Dict[str, Any], variations: Dict[str, List[Any]]
-    ) -> List[Dict[str, Any]]:
+        self, base_inputs: dict[str, Any], variations: dict[str, list[Any]]
+    ) -> list[dict[str, Any]]:
         """
         Test signature with variations of base inputs.
 
@@ -378,7 +378,7 @@ class SignatureTester:
             variations: Dictionary mapping input names to lists of alternative values
 
         Returns:
-            List of test results
+            list of test results
         """
         from itertools import product
 
@@ -440,7 +440,7 @@ class OptimizationTracker:
         self.callbacks = []
 
     def start_run(
-        self, config: Dict[str, Any], trainset_size: int, metric_name: str = "score"
+        self, config: dict[str, Any], trainset_size: int, metric_name: str = "score"
     ) -> str:
         """
         Start tracking a new optimization run.
@@ -474,7 +474,7 @@ class OptimizationTracker:
         self,
         step: int,
         score: float,
-        additional_metrics: Optional[Dict[str, float]] = None,
+        additional_metrics: Optional[dict[str, float]] = None,
         module_state: Optional[Any] = None,
     ):
         """
@@ -547,7 +547,7 @@ class OptimizationTracker:
         """
         self.callbacks.append(callback)
 
-    def get_best_run(self) -> Optional[Dict[str, Any]]:
+    def get_best_run(self) -> Optional[dict[str, Any]]:
         """Get the optimization run with the best final score."""
         if not self.optimization_runs:
             return None
@@ -558,7 +558,7 @@ class OptimizationTracker:
 
         return max(successful_runs, key=lambda x: x["final_score"])
 
-    def get_run_summary(self) -> Dict[str, Any]:
+    def get_run_summary(self) -> dict[str, Any]:
         """Get a summary of all optimization runs."""
         if not self.optimization_runs:
             return {}
@@ -610,7 +610,7 @@ def configure_dspy_lm(
     config = get_config()
 
     if provider is None:
-        provider = config.default_llm_provider
+        provider = config.default_provider
 
     if model is None:
         model = config.default_model
@@ -679,12 +679,12 @@ class ModuleChain:
     Utility for chaining multiple DSPy modules together.
     """
 
-    def __init__(self, modules: List[dspy.Module], names: Optional[List[str]] = None):
+    def __init__(self, modules: list[dspy.Module], names: Optional[list[str]] = None):
         """
         Initialize the module chain.
 
         Args:
-            modules: List of DSPy modules to chain
+            modules: list of DSPy modules to chain
             names: Optional names for the modules
         """
         self.modules = modules
@@ -768,7 +768,7 @@ class ModuleChain:
             self.execution_history.append(execution_record)
             raise
 
-    def get_execution_stats(self) -> Dict[str, Any]:
+    def get_execution_stats(self) -> dict[str, Any]:
         """Get execution statistics for the chain."""
         if not self.execution_history:
             return {}

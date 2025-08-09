@@ -196,8 +196,7 @@ class Exercise:
 @dataclass
 class DSPyConfig:
     language_model: str
-    temperature: float
-    max_tokens: int
+    provider: str
     optimization_strategy: str
     evaluation_metrics: List[str]
     custom_parameters: Dict[str, Any]

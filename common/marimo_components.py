@@ -1,3 +1,4 @@
+# pylint: disable=import-error,import-outside-toplevel,reimported
 """
 Reusable Marimo UI components for DSPy integration.
 
@@ -8,7 +9,7 @@ including parameter controls, result visualization, and reactive update handlers
 # Standard Library
 import logging
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 # Third-Party Library
 import marimo as mo
@@ -31,25 +32,21 @@ class DSPyParameterPanel:
     """
     A comprehensive parameter control panel for DSPy modules.
 
-    This component provides common parameter controls like temperature,
-    max_tokens, model selection, etc., with reactive updates.
+    This component provides common parameter controls like model selection,
+    provider selection, etc., with reactive updates.
     """
 
     def __init__(
         self,
         show_model_selection: bool = True,
-        show_temperature: bool = True,
-        show_max_tokens: bool = True,
         show_provider_selection: bool = True,
-        custom_params: Optional[Dict[str, Any]] = None,
+        custom_params: Optional[dict[str, Any]] = None,
     ):
         """
         Initialize the parameter panel.
 
         Args:
             show_model_selection: Show model selection dropdown
-            show_temperature: Show temperature slider
-            show_max_tokens: Show max tokens slider
             show_provider_selection: Show LLM provider selection
             custom_params: Additional custom parameters
         """
@@ -64,7 +61,7 @@ class DSPyParameterPanel:
             if available_providers:
                 self.controls["provider"] = mo.ui.dropdown(
                     options=available_providers,
-                    value=self.config.default_llm_provider,
+                    value=self.config.default_provider,
                     label="LLM Provider",
                 )
 
@@ -73,16 +70,6 @@ class DSPyParameterPanel:
                 value=self.config.default_model,
                 label="Model Name",
                 placeholder="e.g., gpt-4o-mini, claude-3-sonnet",
-            )
-
-        if show_temperature:
-            self.controls["temperature"] = mo.ui.slider(
-                start=0.0, stop=2.0, step=0.1, value=0.7, label="Temperature"
-            )
-
-        if show_max_tokens:
-            self.controls["max_tokens"] = mo.ui.slider(
-                start=50, stop=4000, step=50, value=1000, label="Max Tokens"
             )
 
         # Add custom parameters
@@ -108,7 +95,7 @@ class DSPyParameterPanel:
                     placeholder=param_config.get("placeholder", ""),
                 )
 
-    def get_values(self) -> Dict[str, Any]:
+    def get_values(self) -> dict[str, Any]:
         """Get current values from all controls."""
         return {name: control.value for name, control in self.controls.items()}
 
@@ -204,8 +191,7 @@ class SignatureBuilder:
                         ),
                     ]
                 ),
-                mo.md("### Generated Code"),
-                mo.md(f"```python\n{self.generate_signature_code()}\n```"),
+                mo.md("### Generated Code (see next cell)"),
             ]
         )
 
@@ -280,7 +266,7 @@ class OptimizationProgressViewer:
         step: int,
         metric_value: float,
         metric_name: str = "Score",
-        additional_metrics: Optional[Dict[str, float]] = None,
+        additional_metrics: Optional[dict[str, float]] = None,
     ):
         """
         Add a progress data point.
@@ -339,8 +325,8 @@ class ComparisonViewer:
         self,
         name: str,
         result: Any,
-        metrics: Optional[Dict[str, float]] = None,
-        config: Optional[Dict[str, Any]] = None,
+        metrics: Optional[dict[str, float]] = None,
+        config: Optional[dict[str, Any]] = None,
     ):
         """
         Add a result for comparison.
@@ -449,8 +435,8 @@ class SignatureTester:
 
     def add_test_result(
         self,
-        inputs: Dict[str, Any],
-        outputs: Dict[str, Any],
+        inputs: dict[str, Any],
+        outputs: dict[str, Any],
         execution_time: float = 0.0,
     ):
         """
@@ -529,7 +515,7 @@ class SignatureTester:
 # =============================================================================
 
 
-def create_parameter_grid(parameters: Dict[str, List[Any]]) -> List[Dict[str, Any]]:
+def create_parameter_grid(parameters: dict[str, list[Any]]) -> list[dict[str, Any]]:
     """
     Create a parameter grid for systematic testing.
 
@@ -537,7 +523,7 @@ def create_parameter_grid(parameters: Dict[str, List[Any]]) -> List[Dict[str, An
         parameters: Dictionary mapping parameter names to lists of values
 
     Returns:
-        List of parameter combinations
+        list of parameter combinations
     """
     import itertools
 
@@ -572,15 +558,15 @@ def format_dspy_result(result: Any) -> str:
 
 
 def create_metrics_chart(
-    metrics_data: List[Dict[str, Any]],
+    metrics_data: list[dict[str, Any]],
     x_field: str = "step",
-    y_fields: Optional[List[str]] = None,
+    y_fields: Optional[list[str]] = None,
 ) -> go.Figure:
     """
     Create a metrics visualization chart.
 
     Args:
-        metrics_data: List of metrics dictionaries
+        metrics_data: list of metrics dictionaries
         x_field: Field to use for x-axis
         y_fields: Fields to plot on y-axis
 

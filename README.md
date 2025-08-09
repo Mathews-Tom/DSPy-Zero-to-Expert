@@ -172,7 +172,7 @@ DSPy-Zero-to-Expert/
 ├── pyproject.toml                  # Project configuration
 ├── .env.template                   # Environment configuration template
 └── verify_installation.py          # Installation verification script
-```
+``` 
 
 ## 🤝 Contributing
 

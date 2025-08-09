@@ -1,3 +1,6 @@
+# pylint: disable=import-error,import-outside-toplevel,reimported
+# cSpell:ignore dspy marimo
+
 import marimo
 
 __generated_with = "0.14.16"
@@ -5,202 +8,243 @@ app = marimo.App(width="medium")
 
 
 @app.cell
-def __():
+def _():
     import sys
+    from inspect import cleandoc
     from pathlib import Path
 
     import dspy
     import marimo as mo
+    from marimo import output
+
+    from common import DSPyResultViewer, get_config, setup_dspy_environment
 
     # Add project root to path
     project_root = Path(__file__).parent.parent.parent
     sys.path.insert(0, str(project_root))
 
-    from common import DSPyResultViewer, get_config, setup_dspy_environment
-
     return (
         DSPyResultViewer,
-        Path,
+        cleandoc,
         dspy,
         get_config,
         mo,
-        project_root,
+        output,
         setup_dspy_environment,
-        sys,
     )
 
 
 @app.cell
-def __(mo):
-    mo.md(
-        r"""
-        # 🎯 Exercise 2: Your First DSPy Signature
-        
-        **Objective**: Create and test your first custom DSPy signature.
-        
-        ## What You'll Learn
-        
-        1. How to design effective DSPy signatures
-        2. The importance of clear field descriptions
-        3. How to test signatures interactively
-        4. Best practices for signature design
-        
-        ## Your Mission
-        
-        You'll create a signature for a **sentiment analysis** task that can classify text as positive, negative, or neutral.
-        """
+def _(cleandoc, mo, output):
+    cell1_out = mo.md(
+        cleandoc(
+            r"""
+            # 🎯 Exercise 2: Your First DSPy Signature
+
+            **Objective**: Create and test your first custom DSPy signature.
+
+            ## What You'll Learn
+
+            1. How to design effective DSPy signatures
+            2. The importance of clear field descriptions
+            3. How to test signatures interactively
+            4. Best practices for signature design
+
+            ## Your Mission
+
+            You'll create a signature for a **sentiment analysis** task that can classify text as positive, negative, or neutral.
+            """
+        )
     )
+    output.replace(cell1_out)
     return
 
 
 @app.cell
-def __(get_config, mo, setup_dspy_environment):
+def _(cleandoc, get_config, mo, output, setup_dspy_environment):
     # Setup DSPy environment
     config = get_config()
     available_providers = config.get_available_llm_providers()
 
     if available_providers:
         setup_dspy_environment()
-        mo.md(
-            f"""
-        ## ✅ DSPy Ready
-        
-        Using: **{config.default_llm_provider}** with model **{config.default_model}**
-        """
+        cell2_out = mo.md(
+            cleandoc(
+                f"""
+                ## ✅ DSPy Ready
+
+                Using: **{config.default_provider}** with model **{config.default_model}**
+                """
+            )
         )
     else:
-        mo.md(
-            """
-        ## ⚠️ Setup Required
-        
-        Please configure your API keys first by completing Exercise 1.
-        """
+        cell2_out = mo.md(
+            cleandoc(
+                """
+                ## ⚠️ Setup Required
+
+                Please configure your API keys first by completing Exercise 1.
+                """
+            )
         )
-    return available_providers, config
+    output.replace(cell2_out)
+    return (available_providers,)
 
 
 @app.cell
-def __(available_providers, mo):
-    if available_providers:
-        mo.md(
+def _(available_providers, cleandoc, mo, output):
+
+    cell3_out = mo.md(
+        cleandoc(
             """
-        ## 📝 Step 1: Design Your Signature
-        
-        Let's start by understanding what makes a good DSPy signature:
-        
-        ### Key Components
-        1. **Clear docstring** - Explains what the signature does
-        2. **Descriptive field names** - Use meaningful names
-        3. **Helpful descriptions** - Guide the LLM's understanding
-        4. **Appropriate field types** - Input vs Output fields
-        
-        ### Your Task
-        Create a signature for sentiment analysis with:
-        - Input: text to analyze
-        - Output: sentiment classification (positive/negative/neutral)
-        - Output: confidence score (0.0 to 1.0)
-        """
+            ## 📝 Step 1: Design Your Signature
+
+            Let's start by understanding what makes a good DSPy signature:
+
+            ### Key Components
+            1. **Clear docstring** - Explains what the signature does
+            2. **Descriptive field names** - Use meaningful names
+            3. **Helpful descriptions** - Guide the LLM's understanding
+            4. **Appropriate field types** - Input vs Output fields
+
+            ### Your Task
+            Create a signature for sentiment analysis with:  
+            - Input: text to analyze  
+            - Output: sentiment classification (positive/negative/neutral)  
+            - Output: confidence score (0.0 to 1.0)  
+            """
         )
+        if available_providers
+        else ""
+    )
+    output.replace(cell3_out)
     return
 
 
 @app.cell
-def __(available_providers, dspy, mo):
-    if available_providers:
-        # Template for the signature - students should modify this
-        signature_template = '''class SentimentAnalysis(dspy.Signature):
-    """TODO: Add a clear description of what this signature does."""
-    
-    # TODO: Add input field for the text to analyze
-    text = dspy.InputField(desc="TODO: Add description")
-    
-    # TODO: Add output field for sentiment classification
-    sentiment = dspy.OutputField(desc="TODO: Add description")
-    
-    # TODO: Add output field for confidence score
-    confidence = dspy.OutputField(desc="TODO: Add description")'''
+def _(available_providers, cleandoc, mo, output):
+    # Template for the signature - students should modify this
+    signature_template = cleandoc(
+        '''
+        class SentimentAnalysis(dspy.Signature):  
+            \"\"\"TODO: Add a clear description of what this signature does.\"\"\"  
 
-        mo.md(
+            \\# TODO: Add input field for the text to analyze  
+            text = dspy.InputField(desc="TODO: Add description")  
+
+            \\# TODO: Add output field for sentiment classification  
+            sentiment = dspy.OutputField(desc="TODO: Add description")  
+
+            \\# TODO: Add output field for confidence score  
+            confidence = dspy.OutputField(desc="TODO: Add description")  
+        '''
+    )
+
+    cell4_out = mo.md(
+        cleandoc(
             f"""
-        ### 🛠️ Your Signature Template
-        
-        Complete the TODO items in this signature:
-        
-        ```python
-        {signature_template}
-        ```
-        
-        **Hints:**
-        - The docstring should explain the task clearly
-        - Input description should specify what kind of text
-        - Sentiment output should specify the possible values
-        - Confidence should explain the scale (0.0 to 1.0)
-        """
+            ### 🛠️ Your Signature Template
+
+            Complete the TODO items in this signature:
+
+            ```python
+            {signature_template}
+            ```
+
+            **Hints:**
+            - The docstring should explain the task clearly
+            - Input description should specify what kind of text
+            - Sentiment output should specify the possible values
+            - Confidence should explain the scale (0.0 to 1.0)
+            """
         )
-    return (signature_template,)
+        if available_providers
+        else ""
+    )
+    output.replace(cell4_out)
+    return
 
 
 @app.cell
-def __(available_providers, mo):
+def _(available_providers, mo, output):
     if available_providers:
         # Interactive signature builder
-        signature_form = mo.ui.form(
-            {
-                "docstring": mo.ui.text_area(
-                    placeholder="Analyze the sentiment of the given text...",
-                    label="Signature Description (Docstring)",
-                ),
-                "input_desc": mo.ui.text_area(
-                    placeholder="The text to analyze for sentiment...",
-                    label="Input Field Description",
-                ),
-                "sentiment_desc": mo.ui.text_area(
-                    placeholder="The sentiment classification: positive, negative, or neutral...",
-                    label="Sentiment Output Description",
-                ),
-                "confidence_desc": mo.ui.text_area(
-                    placeholder="Confidence score from 0.0 to 1.0...",
-                    label="Confidence Output Description",
-                ),
-            }
+        docstring = mo.ui.text_area(
+            placeholder="Analyze the sentiment of the given text...",
+            label="Signature Description (Docstring)",
         )
-
-        mo.vstack(
-            [
-                mo.md("### ✏️ Build Your Signature"),
-                mo.md("Fill in the descriptions for each part:"),
-                signature_form,
-            ]
+        input_desc = mo.ui.text_area(
+            placeholder="The text to analyze for sentiment...",
+            label="Input Field Description",
+        )
+        sentiment_desc = mo.ui.text_area(
+            placeholder="The sentiment classification: positive, negative, or neutral...",
+            label="Sentiment Output Description",
+        )
+        confidence_desc = mo.ui.text_area(
+            placeholder="Confidence score from 0.0 to 1.0...",
+            label="Confidence Output Description",
         )
     else:
-        signature_form = None
-    return (signature_form,)
+        docstring = None
+        input_desc = None
+        sentiment_desc = None
+        confidence_desc = None
+    cell5_out = mo.vstack(
+        [
+            mo.md("### ✏️ Build Your Signature"),
+            mo.md("Fill in the descriptions for each part:"),
+            docstring,
+            input_desc,
+            sentiment_desc,
+            confidence_desc,
+        ]
+    )
+    output.replace(cell5_out)
+    return confidence_desc, docstring, input_desc, sentiment_desc
 
 
 @app.cell
-def __(available_providers, dspy, mo, signature_form):
-    if available_providers and signature_form.value:
-        # Generate the complete signature based on user input
-        form_data = signature_form.value
+def _(
+    available_providers,
+    cleandoc,
+    confidence_desc,
+    docstring,
+    dspy,
+    input_desc,
+    mo,
+    output,
+    sentiment_desc,
+):
+    if available_providers and docstring is not None and docstring.value:
 
-        if all(form_data.values()):  # All fields filled
+        if all(
+            [
+                docstring.value,
+                input_desc.value,
+                sentiment_desc.value,
+                confidence_desc.value,
+            ]
+        ):  # All fields filled
             # Create the signature class dynamically
             class SentimentAnalysis(dspy.Signature):
-                __doc__ = form_data["docstring"]
+                __doc__ = docstring.value
 
-                text = dspy.InputField(desc=form_data["input_desc"])
-                sentiment = dspy.OutputField(desc=form_data["sentiment_desc"])
-                confidence = dspy.OutputField(desc=form_data["confidence_desc"])
+                text = dspy.InputField(desc=input_desc.value)
+                sentiment = dspy.OutputField(desc=sentiment_desc.value)
+                confidence = dspy.OutputField(desc=confidence_desc.value)
 
             # Generate code representation
-            signature_code = f'''class SentimentAnalysis(dspy.Signature):
-    """{form_data["docstring"]}"""
-    
-    text = dspy.InputField(desc="{form_data["input_desc"]}")
-    sentiment = dspy.OutputField(desc="{form_data["sentiment_desc"]}")
-    confidence = dspy.OutputField(desc="{form_data["confidence_desc"]}")'''
+            signature_code = cleandoc(
+                f'''class SentimentAnalysis(dspy.Signature):
+                    """{docstring.value}"""
 
-            mo.vstack(
+                    text = dspy.InputField(desc="{input_desc.value}")
+                    sentiment = dspy.OutputField(desc="{sentiment_desc.value}")
+                    confidence = dspy.OutputField(desc="{confidence_desc.value}")
+                '''
+            )
+            cell6_out = mo.vstack(
                 [
                     mo.md("### 🎉 Your Complete Signature"),
                     mo.md(f"```python\n{signature_code}\n```"),
@@ -209,68 +253,85 @@ def __(available_providers, dspy, mo, signature_form):
             )
         else:
             SentimentAnalysis = None
-            mo.md("*Fill in all the fields above to generate your signature.*")
+            cell6_out = mo.md(
+                "*Fill in all the fields above to generate your signature.*"
+            )
     else:
         SentimentAnalysis = None
-    return SentimentAnalysis, form_data, signature_code
+        cell6_out = mo.md("")
+    output.replace(cell6_out)
+    return (SentimentAnalysis,)
 
 
 @app.cell
-def __(SentimentAnalysis, available_providers, dspy, mo):
+def _(SentimentAnalysis, available_providers, cleandoc, dspy, mo, output):
     if available_providers and SentimentAnalysis:
         # Create predictor
         sentiment_predictor = dspy.Predict(SentimentAnalysis)
 
-        mo.md(
-            """
-        ## 🧪 Step 2: Test Your Signature
-        
-        Now let's test your signature with some example texts:
-        """
+        cell7_out = mo.md(
+            cleandoc(
+                """
+                ## 🧪 Step 2: Test Your Signature
+
+                Now let's test your signature with some example texts:  
+                """
+            )
         )
     else:
         sentiment_predictor = None
+        cell7_out = mo.md("")
+    output.replace(cell7_out)
     return (sentiment_predictor,)
 
 
 @app.cell
-def __(available_providers, mo, sentiment_predictor):
+def _(available_providers, mo, output, sentiment_predictor):
     if available_providers and sentiment_predictor:
         # Test input form
-        test_form = mo.ui.form(
-            {
-                "test_text": mo.ui.text_area(
-                    placeholder="Enter text to analyze...",
-                    label="Text to Analyze",
-                    value="I absolutely love this new restaurant! The food was amazing and the service was excellent.",
-                ),
-                "run_test": mo.ui.button(label="🔍 Analyze Sentiment"),
-            }
+        test_text = mo.ui.text_area(
+            placeholder="Enter text to analyze...",
+            label="Text to Analyze",
+            value="I absolutely love this new restaurant! The food was amazing and the service was excellent.",
         )
+        run_test = mo.ui.run_button(label="🔍 Analyze Sentiment")
 
-        test_form
+        cell8_content = mo.vstack([test_text, run_test])
     else:
-        test_form = None
-    return (test_form,)
+        test_text = None
+        run_test = None
+        cell8_content = mo.md("")
+
+    output.replace(cell8_content)
+    return run_test, test_text
 
 
 @app.cell
-def __(DSPyResultViewer, available_providers, mo, sentiment_predictor, test_form):
+def _(
+    DSPyResultViewer,
+    available_providers,
+    cleandoc,
+    mo,
+    output,
+    run_test,
+    sentiment_predictor,
+    test_text,
+):
     if (
         available_providers
         and sentiment_predictor
-        and test_form.value
-        and test_form.value["run_test"]
+        and run_test is not None
+        and run_test.value
     ):
-        test_text = test_form.value["test_text"]
+        cell9_test_text = test_text.value
 
-        if test_text.strip():
+        if cell9_test_text.strip():
             try:
                 # Run the prediction
-                result = sentiment_predictor(text=test_text)
+                result = sentiment_predictor(text=cell9_test_text)
 
                 # Display results
-                mo.vstack(
+                cell9_out = mo.vstack(
                     [
                         mo.md("### 📊 Analysis Results"),
                         mo.md(f"**Input Text:** {test_text}"),
@@ -282,36 +343,43 @@ def __(DSPyResultViewer, available_providers, mo, sentiment_predictor, test_form
                     ]
                 )
             except Exception as e:
-                mo.md(
-                    f"""
-                ### ❌ Error
-                
-                An error occurred: `{str(e)}`
-                
-                **Common issues:**
-                - API key problems
-                - Network connectivity
-                - Rate limiting
-                
-                Try again or check your configuration.
-                """
+                cell9_out = mo.md(
+                    cleandoc(
+                        f"""
+                        ### ❌ Error
+
+                        An error occurred: `{str(e)}`
+
+                        **Common issues:**
+                        - API key problems
+                        - Network connectivity
+                        - Rate limiting
+
+                        Try again or check your configuration.
+                        """
+                    )
                 )
         else:
-            mo.md("*Enter some text to analyze.*")
+            cell9_out = mo.md("*Enter some text to analyze.*")
     else:
-        mo.md("*Click the 'Analyze Sentiment' button to test your signature.*")
-    return result, test_text
+        cell9_out = mo.md(
+            "*Click the 'Analyze Sentiment' button to test your signature.*"
+        )
+    output.replace(cell9_out)
+    return
 
 
 @app.cell
-def __(available_providers, mo):
+def _(available_providers, cleandoc, mo, output):
     if available_providers:
-        mo.md(
-            """
-        ## 🎯 Step 3: Test Multiple Examples
-        
-        Try testing your signature with different types of text:
-        """
+        cell10_desc = mo.md(
+            cleandoc(
+                """
+                ## 🎯 Step 3: Test Multiple Examples
+
+                Try testing your signature with different types of text:
+                """
+            )
         )
 
         # Predefined test cases
@@ -327,145 +395,159 @@ def __(available_providers, mo):
             options=test_cases, label="Select a test case or use the form above"
         )
 
-        mo.vstack([mo.md("**Quick Test Cases:**"), test_case_selector])
+        cell10_out = mo.vstack(
+            [cell10_desc, mo.md("**Quick Test Cases:**"), test_case_selector]
+        )
     else:
         test_case_selector = None
-    return test_case_selector, test_cases
+        cell10_out = mo.md("")
+    output.replace(cell10_out)
+    return (test_case_selector,)
 
 
 @app.cell
-def __(available_providers, mo, sentiment_predictor, test_case_selector):
+def _(
+    available_providers,
+    cleandoc,
+    mo,
+    output,
+    sentiment_predictor,
+    test_case_selector,
+):
     if available_providers and sentiment_predictor and test_case_selector.value:
         selected_text = test_case_selector.value
 
         try:
             quick_result = sentiment_predictor(text=selected_text)
 
-            mo.md(
-                f"""
-            ### 🔍 Quick Test Result
-            
-            **Text:** "{selected_text}"
-            **Sentiment:** {quick_result.sentiment}
-            **Confidence:** {quick_result.confidence}
-            """
+            cell11_out = mo.md(
+                cleandoc(
+                    f"""
+                    ### 🔍 Quick Test Result
+
+                    **Text:** "{selected_text}"
+                    **Sentiment:** {quick_result.sentiment}
+                    **Confidence:** {quick_result.confidence}
+                    """
+                )
             )
         except Exception as e:
-            mo.md(f"Error with quick test: {str(e)}")
+            cell11_out = mo.md(f"Error with quick test: {str(e)}")
     else:
-        mo.md("*Select a test case above for quick testing.*")
-    return quick_result, selected_text
+        cell11_out = mo.md("*Select a test case above for quick testing.*")
+    output.replace(cell11_out)
+    return
 
 
 @app.cell
-def __(available_providers, mo):
+def _(available_providers, mo, output):
     if available_providers:
         # Exercise completion and reflection
-        reflection_form = mo.ui.form(
-            {
-                "signature_quality": mo.ui.radio(
-                    options=["Excellent", "Good", "Needs improvement"],
-                    label="How would you rate your signature design?",
-                ),
-                "what_learned": mo.ui.text_area(
-                    placeholder="What did you learn about DSPy signatures?",
-                    label="Key Learnings",
-                ),
-                "improvements": mo.ui.text_area(
-                    placeholder="How could you improve your signature?",
-                    label="Potential Improvements",
-                ),
-                "ready_next": mo.ui.checkbox(label="I'm ready to move on to Module 01"),
-            }
+        signature_quality = mo.ui.radio(
+            options=["Excellent", "Good", "Needs improvement"],
+            label="How would you rate your signature design?",
         )
+        what_learned = mo.ui.text_area(
+            placeholder="What did you learn about DSPy signatures?",
+            label="Key Learnings",
+        )
+        improvements = mo.ui.text_area(
+            placeholder="How could you improve your signature?",
+            label="Potential Improvements",
+        )
+        ready_next = mo.ui.checkbox(label="I'm ready to move on to Module 01")
 
-        mo.vstack(
+        cell12_out = mo.vstack(
             [
                 mo.md("## 🤔 Reflection & Completion"),
                 mo.md("Take a moment to reflect on what you've learned:"),
-                reflection_form,
+                signature_quality,
+                what_learned,
+                improvements,
+                ready_next,
             ]
         )
     else:
-        reflection_form = None
-    return (reflection_form,)
+        signature_quality = None
+        what_learned = None
+        improvements = None
+        ready_next = None
+        cell12_out = mo.md("")
+
+    output.replace(cell12_out)
+    return (ready_next,)
 
 
 @app.cell
-def __(available_providers, mo, reflection_form):
-    if available_providers and reflection_form.value:
-        reflection = reflection_form.value
+def _(available_providers, cleandoc, mo, output, ready_next):
+    if available_providers and ready_next is not None and ready_next.value:
+        cell13_out = mo.md(
+            cleandoc(
+                """
+                ## 🎉 Exercise Complete!
 
-        if reflection["ready_next"]:
-            mo.md(
+                **Congratulations!** You've successfully:
+
+                ✅ Designed your first custom DSPy signature
+                ✅ Understood the importance of clear descriptions
+                ✅ Tested your signature with multiple examples
+                ✅ Reflected on the learning process
+
+                ### 🚀 What's Next?
+
+                You're now ready for **Module 01: DSPy Foundations**!
+
+                **Key concepts you'll explore:**
+                - Advanced signature patterns
+                - Different module types (Predict, ChainOfThought, etc.)
+                - Signature composition and reuse
+                - Interactive development workflows
+
+                **Start Module 01:**
+                ```bash
+                uv run marimo run 01-foundations/signatures_basics.py
+                ```
                 """
-            ## 🎉 Exercise Complete!
-            
-            **Congratulations!** You've successfully:
-            
-            ✅ Designed your first custom DSPy signature
-            ✅ Understood the importance of clear descriptions
-            ✅ Tested your signature with multiple examples
-            ✅ Reflected on the learning process
-            
-            ### 🚀 What's Next?
-            
-            You're now ready for **Module 01: DSPy Foundations**!
-            
-            **Key concepts you'll explore:**
-            - Advanced signature patterns
-            - Different module types (Predict, ChainOfThought, etc.)
-            - Signature composition and reuse
-            - Interactive development workflows
-            
-            **Start Module 01:**
-            ```bash
-            uv run marimo run 01-foundations/signatures_basics.py
-            ```
-            """
             )
-        else:
-            mo.md(
-                """
-            ### 📝 Your Reflection
-            
-            Thanks for sharing your thoughts! Take some time to experiment more with your signature if needed.
-            
-            **Remember:** Good signature design is crucial for DSPy success. The clearer your descriptions, the better your results will be.
-            """
-            )
+        )
     else:
-        mo.md("*Complete the reflection form above to finish this exercise.*")
-    return reflection
+        cell13_out = mo.md(
+            "*Complete the reflection form above to finish this exercise.*"
+        )
+    output.replace(cell13_out)
+    return
 
 
 @app.cell
-def __(mo):
-    mo.md(
-        """
-    ## 💡 Signature Design Tips
-    
-    **Best Practices for DSPy Signatures:**
-    
-    1. **Be Specific**: Vague descriptions lead to unpredictable results
-    2. **Include Examples**: Mention expected formats in descriptions
-    3. **Use Constraints**: Specify ranges, formats, or valid options
-    4. **Think Like an LLM**: What context would help you understand the task?
-    5. **Iterate**: Test and refine your signatures based on results
-    
-    **Common Mistakes to Avoid:**
-    - Generic field names like "input" or "output"
-    - Missing or unclear descriptions
-    - Too many fields in one signature
-    - Ambiguous output formats
-    
-    **Advanced Techniques (for later):**
-    - Using type hints for structured outputs
-    - Signature composition and inheritance
-    - Dynamic signature generation
-    - Multi-step reasoning patterns
-    """
+def _(cleandoc, mo, output):
+    cell14_out = mo.md(
+        cleandoc(
+            """
+            ## 💡 Signature Design Tips
+
+            **Best Practices for DSPy Signatures:**
+
+            1. **Be Specific**: Vague descriptions lead to unpredictable results
+            2. **Include Examples**: Mention expected formats in descriptions
+            3. **Use Constraints**: Specify ranges, formats, or valid options
+            4. **Think Like an LLM**: What context would help you understand the task?
+            5. **Iterate**: Test and refine your signatures based on results
+
+            **Common Mistakes to Avoid:**  
+            - Generic field names like "input" or "output"  
+            - Missing or unclear descriptions  
+            - Too many fields in one signature  
+            - Ambiguous output formats  
+
+            **Advanced Techniques (for later):**  
+            - Using type hints for structured outputs  
+            - Signature composition and inheritance  
+            - Dynamic signature generation  
+            - Multi-step reasoning patterns  
+            """
+        )
     )
+    output.replace(cell14_out)
     return
 
 

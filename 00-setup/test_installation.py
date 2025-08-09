@@ -11,11 +11,7 @@ import os
 import sys
 import time
 from pathlib import Path
-from typing import Any, Dict, List, Optional
-
-# Add the project root to the path
-project_root = Path(__file__).parent.parent
-sys.path.insert(0, str(project_root))
+from typing import Any
 
 from common import (
     DSPyParameterPanel,
@@ -26,6 +22,10 @@ from common import (
     setup_logging,
     validate_environment,
 )
+
+# Add the project root to the path
+project_root = Path(__file__).parent.parent
+sys.path.insert(0, str(project_root))
 
 # Set up logging
 setup_logging(level="INFO")
@@ -198,7 +198,7 @@ def test_marimo_functionality() -> Dict[str, bool]:
 
         # Test our custom Marimo components
         try:
-            panel = DSPyParameterPanel(show_temperature=True, show_max_tokens=True)
+            panel = DSPyParameterPanel(show_model_selection=True)
             print_success("Custom DSPy parameter panel")
             results["custom_components"] = True
         except Exception as e:
@@ -378,7 +378,7 @@ def run_performance_test() -> Dict[str, Any]:
     return results
 
 
-def generate_test_report(all_results: Dict[str, Dict[str, Any]]) -> None:
+def generate_test_report(all_results: Dict[str, dict[str, Any]]) -> None:
     """Generate a comprehensive test report."""
     print_header("Installation Test Report")
 

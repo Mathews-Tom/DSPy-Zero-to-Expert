@@ -546,9 +546,8 @@ dspy.configure(lm=lm)
 
 # Interactive parameter cell
 parameters = mo.ui.dictionary({
-    "temperature": mo.ui.slider(0.0, 1.0, value=0.7),
-    "max_tokens": mo.ui.slider(50, 500, value=150),
-    "model": mo.ui.dropdown(["gpt-4o-mini", "gpt-4o", "claude-3-sonnet"], value="gpt-4o-mini")
+    "model": mo.ui.dropdown(["gpt-4o-mini", "gpt-4o", "claude-3-sonnet"], value="gpt-4o-mini"),
+    "provider": mo.ui.dropdown(["openai", "anthropic"], value="openai")
 })
 
 # Implementation cell  

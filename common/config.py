@@ -8,11 +8,11 @@ with support for environment variables and .env files.
 # Standard Library
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 # Third-Party Library
 from pydantic import Field, field_validator
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 # Get the project root directory
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -39,9 +39,6 @@ class Config(BaseSettings):
 
     # OpenAI
     openai_api_key: Optional[str] = Field(default=None, description="OpenAI API key")
-    openai_org_id: Optional[str] = Field(
-        default=None, description="OpenAI organization ID"
-    )
 
     # Anthropic
     anthropic_api_key: Optional[str] = Field(
@@ -52,10 +49,8 @@ class Config(BaseSettings):
     cohere_api_key: Optional[str] = Field(default=None, description="Cohere API key")
 
     # Default LLM settings
-    default_llm_provider: str = Field(
-        default="openai", description="Default LLM provider"
-    )
-    default_model: str = Field(default="gpt-4o-mini", description="Default model name")
+    default_provider: str = Field(default="openai", description="Default LLM provider")
+    default_model: str = Field(default="gpt-4.1", description="Default model name")
 
     # =============================================================================
     # Search and Tool APIs
@@ -138,11 +133,11 @@ class Config(BaseSettings):
     )
     test_timeout: int = Field(default=30, description="Test timeout in seconds")
 
-    model_config = {
-        "env_file": ".env",
-        "env_file_encoding": "utf-8",
-        "case_sensitive": False,
-    }
+    model_config: SettingsConfigDict = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+        case_sensitive=False,
+    )
 
     @field_validator("log_level")
     @classmethod
@@ -162,7 +157,7 @@ class Config(BaseSettings):
             raise ValueError(f"Log format must be one of: {valid_formats}")
         return v.lower()
 
-    @field_validator("default_llm_provider")
+    @field_validator("default_provider")
     @classmethod
     def validate_llm_provider(cls, v):
         """Validate LLM provider."""
@@ -210,7 +205,7 @@ class Config(BaseSettings):
             and self.langfuse_secret_key is not None
         )
 
-    def get_available_llm_providers(self) -> List[str]:
+    def get_available_llm_providers(self) -> list[str]:
         """Get list of available LLM providers based on configuration."""
         providers = []
         if self.has_openai_config():
@@ -221,10 +216,10 @@ class Config(BaseSettings):
             providers.append("cohere")
         return providers
 
-    def get_llm_config(self, provider: Optional[str] = None) -> Dict[str, Any]:
+    def get_llm_config(self, provider: Optional[str] = None) -> dict[str, Any]:
         """Get LLM configuration for the specified provider."""
         if provider is None:
-            provider = self.default_llm_provider
+            provider = self.default_provider
 
         provider = provider.lower()
 
@@ -232,8 +227,6 @@ class Config(BaseSettings):
             if not self.has_openai_config():
                 raise ValueError("OpenAI API key not configured")
             config = {"api_key": self.openai_api_key}
-            if self.openai_org_id:
-                config["organization"] = self.openai_org_id
             return config
 
         elif provider == "anthropic":
@@ -249,7 +242,7 @@ class Config(BaseSettings):
         else:
             raise ValueError(f"Unknown LLM provider: {provider}")
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert configuration to dictionary, excluding sensitive data."""
         data = self.dict()
 
@@ -285,6 +278,9 @@ def get_config() -> Config:
     global _config
     if _config is None:
         _config = Config()
+        logging.getLogger(__name__).debug(
+            "Config loaded, default_model=%s", _config.default_model
+        )
     return _config
 
 
