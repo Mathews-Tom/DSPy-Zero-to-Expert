@@ -222,7 +222,7 @@ setup_dspy_environment()  # This should be called before using DSPy
 **Solution**:
 
 - Check signature descriptions are clear
-- Try different temperature settings
+- Try different model configurations
 - Add more specific constraints to output fields
 
 ## Next Steps
