@@ -10,7 +10,7 @@ statistical reporting.
 import math
 import random
 import statistics
-from typing import Any, Dict, List, Tuple
+from typing import Any
 
 import dspy
 
@@ -23,8 +23,8 @@ class StatisticalEvaluator:
         self.alpha = 1 - confidence_level
 
     def bootstrap_confidence_interval(
-        self, scores: List[float], n_bootstrap: int = 1000
-    ) -> Tuple[float, float]:
+        self, scores: list[float], n_bootstrap: int = 1000
+    ) -> tuple[float, float]:
         """Calculate bootstrap confidence interval for mean score."""
         if not scores:
             return (0.0, 0.0)
@@ -56,7 +56,7 @@ class StatisticalEvaluator:
         return (lower_bound, upper_bound)
 
     def calculate_effect_size(
-        self, scores_a: List[float], scores_b: List[float]
+        self, scores_a: list[float], scores_b: list[float]
     ) -> float:
         """Calculate Cohen's d effect size."""
         if not scores_a or not scores_b:
@@ -84,7 +84,7 @@ class StatisticalEvaluator:
         return cohens_d
 
     def permutation_test(
-        self, scores_a: List[float], scores_b: List[float], n_permutations: int = 1000
+        self, scores_a: list[float], scores_b: list[float], n_permutations: int = 1000
     ) -> float:
         """Perform permutation test for significance."""
         if not scores_a or not scores_b:
@@ -119,8 +119,8 @@ class StatisticalEvaluator:
         return p_value
 
     def welch_t_test(
-        self, scores_a: List[float], scores_b: List[float]
-    ) -> Tuple[float, float, int]:
+        self, scores_a: list[float], scores_b: list[float]
+    ) -> tuple[float, float, int]:
         """Perform Welch's t-test (unequal variances)."""
         if len(scores_a) < 2 or len(scores_b) < 2:
             return 0.0, 1.0, 0
@@ -168,9 +168,9 @@ class StatisticalEvaluator:
         self,
         system_a: Any,
         system_b: Any,
-        test_examples: List[dspy.Example],
+        test_examples: list[dspy.Example],
         metric: Any,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Comprehensive statistical evaluation of two systems."""
 
         # Generate predictions for both systems
@@ -289,7 +289,7 @@ class StatisticalEvaluator:
             },
         }
 
-    def generate_statistical_report(self, results: Dict[str, Any]) -> str:
+    def generate_statistical_report(self, results: dict[str, Any]) -> str:
         """Generate a comprehensive statistical report."""
 
         system_a = results["system_a"]

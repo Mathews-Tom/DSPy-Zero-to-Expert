@@ -10,7 +10,7 @@ and export functionality.
 import json
 import statistics
 from collections import defaultdict
-from typing import Any, Dict, List, Tuple
+from typing import Any
 
 import dspy
 
@@ -43,7 +43,7 @@ class MultiSystemEvaluator:
         }
         print(f"Added metric: {name} (weight: {weight})")
 
-    def evaluate_all_systems(self, test_examples: List[dspy.Example]) -> Dict[str, Any]:
+    def evaluate_all_systems(self, test_examples: list[dspy.Example]) -> dict[str, Any]:
         """Evaluate all systems with all metrics."""
         print(
             f"Evaluating {len(self.systems)} systems with {len(self.metrics)} metrics..."
@@ -111,7 +111,7 @@ class MultiSystemEvaluator:
             "rankings": self.rankings,
         }
 
-    def calculate_rankings(self) -> Dict[str, List[Tuple[str, float]]]:
+    def calculate_rankings(self) -> dict[str, list[tuple[str, float]]]:
         """Calculate rankings for each metric and overall."""
         rankings = {}
 
@@ -153,7 +153,7 @@ class MultiSystemEvaluator:
 
         return rankings
 
-    def generate_comparison_matrix(self) -> Dict[str, Dict[str, float]]:
+    def generate_comparison_matrix(self) -> dict[str, dict[str, float]]:
         """Generate pairwise comparison matrix."""
         comparison_matrix = {}
         system_names = list(self.systems.keys())
@@ -194,7 +194,7 @@ class MultiSystemEvaluator:
 
         return comparison_matrix
 
-    def create_visualization_data(self) -> Dict[str, Any]:
+    def create_visualization_data(self) -> dict[str, Any]:
         """Create data structure for visualization."""
         viz_data = {
             "bar_chart": self._create_bar_chart_data(),
@@ -204,7 +204,7 @@ class MultiSystemEvaluator:
         }
         return viz_data
 
-    def _create_bar_chart_data(self) -> Dict[str, Any]:
+    def _create_bar_chart_data(self) -> dict[str, Any]:
         """Create data for bar chart visualization."""
         data = {"systems": list(self.systems.keys()), "metrics": {}}
 
@@ -223,7 +223,7 @@ class MultiSystemEvaluator:
 
         return data
 
-    def _create_radar_chart_data(self) -> Dict[str, Any]:
+    def _create_radar_chart_data(self) -> dict[str, Any]:
         """Create data for radar chart visualization."""
         data = {"metrics": list(self.metrics.keys()), "systems": {}}
 
@@ -242,7 +242,7 @@ class MultiSystemEvaluator:
 
         return data
 
-    def _create_heatmap_data(self) -> Dict[str, Any]:
+    def _create_heatmap_data(self) -> dict[str, Any]:
         """Create data for heatmap visualization."""
         systems = list(self.systems.keys())
         metrics = list(self.metrics.keys())
@@ -264,7 +264,7 @@ class MultiSystemEvaluator:
 
         return {"systems": systems, "metrics": metrics, "matrix": matrix}
 
-    def _create_scatter_plot_data(self) -> Dict[str, Any]:
+    def _create_scatter_plot_data(self) -> dict[str, Any]:
         """Create data for scatter plot visualization (metric1 vs metric2)."""
         if len(self.metrics) < 2:
             return {"error": "Need at least 2 metrics for scatter plot"}
@@ -374,7 +374,7 @@ class MultiSystemEvaluator:
 
         return "\n".join(report)
 
-    def generate_insights(self) -> List[str]:
+    def generate_insights(self) -> list[str]:
         """Generate insights from evaluation results."""
         insights = []
 
