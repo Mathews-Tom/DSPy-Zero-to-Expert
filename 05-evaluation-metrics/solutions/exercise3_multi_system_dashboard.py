@@ -75,7 +75,9 @@ class MultiSystemEvaluator:
                 scores = []
                 detailed_results = []
 
-                for example, prediction in zip(test_examples, predictions):
+                for example, prediction in zip(
+                    test_examples, predictions, strict=False
+                ):
                     if hasattr(metric, "evaluate"):
                         result = metric.evaluate(example, prediction)
                         score = (
@@ -559,7 +561,7 @@ def test_multi_system_evaluator():
     results = evaluator.evaluate_all_systems(test_examples)
 
     # Display results
-    print(f"\nEvaluation completed:")
+    print("\nEvaluation completed:")
     print(f"  Systems: {results['systems_evaluated']}")
     print(f"  Metrics: {results['metrics_used']}")
     print(f"  Examples: {results['examples_processed']}")
@@ -603,7 +605,7 @@ def test_multi_system_evaluator():
 
     # Show bar chart data
     bar_data = viz_data["bar_chart"]
-    print(f"\nBar chart data:")
+    print("\nBar chart data:")
     print(f"  Systems: {bar_data['systems']}")
     for metric, scores in bar_data["metrics"].items():
         print(f"  {metric}: {[f'{s:.3f}' for s in scores]}")

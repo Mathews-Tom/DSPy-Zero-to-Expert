@@ -198,7 +198,9 @@ class StatisticalEvaluator:
         scores_a = []
         scores_b = []
 
-        for example, pred_a, pred_b in zip(test_examples, predictions_a, predictions_b):
+        for example, pred_a, pred_b in zip(
+            test_examples, predictions_a, predictions_b, strict=False
+        ):
             # Score for system A
             if hasattr(metric, "evaluate"):
                 result_a = metric.evaluate(example, pred_a)
