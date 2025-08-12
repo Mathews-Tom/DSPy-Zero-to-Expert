@@ -1,0 +1,62 @@
+[
+  {
+    "question": "What is Python?",
+    "answer": "Python is a high-level, interpreted programming language known for its simplicity and readability. It was created by Guido van Rossum and first released in 1991.",
+    "category": "programming",
+    "difficulty": "beginner"
+  },
+  {
+    "question": "What is machine learning?",
+    "answer": "Machine learning is a subset of artificial intelligence that enables computers to learn and make decisions from data without being explicitly programmed for every task.",
+    "category": "ai",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What is DSPy?",
+    "answer": "DSPy is a framework for algorithmically optimizing language model prompts and weights, especially when language models are used one or more times within a pipeline.",
+    "category": "ai",
+    "difficulty": "advanced"
+  },
+  {
+    "question": "What is a neural network?",
+    "answer": "A neural network is a computing system inspired by biological neural networks. It consists of interconnected nodes (neurons) that process information using a connectionist approach.",
+    "category": "ai",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What is the difference between supervised and unsupervised learning?",
+    "answer": "Supervised learning uses labeled training data to learn a mapping from inputs to outputs, while unsupervised learning finds patterns in data without labeled examples.",
+    "category": "ai",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What is a REST API?",
+    "answer": "REST (Representational State Transfer) API is an architectural style for designing networked applications. It uses standard HTTP methods and is stateless, scalable, and cacheable.",
+    "category": "web",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What is version control?",
+    "answer": "Version control is a system that tracks changes to files over time, allowing multiple people to collaborate on projects and maintain a history of modifications.",
+    "category": "programming",
+    "difficulty": "beginner"
+  },
+  {
+    "question": "What is the purpose of unit testing?",
+    "answer": "Unit testing involves testing individual components or modules of software in isolation to ensure they work correctly. It helps catch bugs early and makes code more maintainable.",
+    "category": "programming",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What is cloud computing?",
+    "answer": "Cloud computing is the delivery of computing services over the internet, including servers, storage, databases, networking, software, and analytics.",
+    "category": "infrastructure",
+    "difficulty": "beginner"
+  },
+  {
+    "question": "What is the difference between SQL and NoSQL databases?",
+    "answer": "SQL databases are relational and use structured query language, while NoSQL databases are non-relational and can handle unstructured data with flexible schemas.",
+    "category": "database",
+    "difficulty": "intermediate"
+  }
+]

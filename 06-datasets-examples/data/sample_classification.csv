@@ -1,0 +1,21 @@
+text,label,confidence
+"This product is amazing! I love it so much.",positive,0.95
+"Terrible quality, would not recommend.",negative,0.92
+"It's okay, nothing special but does the job.",neutral,0.78
+"Outstanding service and fast delivery!",positive,0.89
+"The worst purchase I've ever made.",negative,0.96
+"Average product, meets basic expectations.",neutral,0.82
+"Absolutely fantastic! Exceeded my expectations.",positive,0.94
+"Poor customer service and defective item.",negative,0.88
+"Decent value for the price point.",neutral,0.75
+"Incredible quality and attention to detail.",positive,0.91
+"Completely disappointed with this purchase.",negative,0.93
+"It works fine, no complaints.",neutral,0.79
+"Best product in its category!",positive,0.97
+"Waste of money, very poor quality.",negative,0.90
+"Satisfactory performance overall.",neutral,0.76
+"Highly recommend to everyone!",positive,0.92
+"Broke after just one week of use.",negative,0.85
+"Good enough for basic needs.",neutral,0.73
+"Exceptional build quality and design.",positive,0.89
+"Regret buying this item.",negative,0.87
