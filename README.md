@@ -37,6 +37,104 @@ By the end of this course, you will be able to:
 - ✅ Understand DSPy optimization and evaluation techniques
 - ✅ Create production-ready agentic applications
 
+## 💻 **See The Difference: Traditional vs DSPy**
+
+### **Example 1: Question Answering System**
+
+#### **❌ Traditional Approach (Fragile)**
+
+```python
+# Manual prompt crafting - breaks easily
+def answer_question(context, question):
+    prompt = f"""
+    Context: {context}
+    Question: {question}
+    
+    Please provide a detailed answer based on the context above.
+    Make sure to be accurate and cite relevant information.
+    """
+    return llm.generate(prompt)
+
+# Problems: No optimization, inconsistent results, hard to improve
+```
+
+#### **✅ DSPy Approach (Systematic)**
+
+```python
+import dspy
+
+class QA(dspy.Signature):
+    """Answer questions based on provided context"""
+    context = dspy.InputField(desc="Background information")
+    question = dspy.InputField(desc="Question to answer")
+    answer = dspy.OutputField(desc="Detailed, accurate answer")
+
+class QuestionAnswering(dspy.Module):
+    def __init__(self):
+        self.qa = dspy.ChainOfThought(QA)
+    
+    def forward(self, context, question):
+        return self.qa(context=context, question=question)
+
+# DSPy automatically optimizes prompts for your specific data!
+qa_system = QuestionAnswering()
+optimizer = dspy.BootstrapFewShot(metric=accuracy_metric)
+optimized_qa = optimizer.compile(qa_system, trainset=examples)
+```
+
+### **Example 2: Content Classification**
+
+#### **❌ Traditional Approach (Trial & Error)**
+
+```python
+# Endless prompt tweaking
+def classify_content(text):
+    prompt = f"""
+    Classify this text into one of these categories:
+    - Technology
+    - Business  
+    - Science
+    - Entertainment
+    
+    Text: {text}
+    
+    Category:
+    """
+    # Hope it works, manually adjust when it doesn't
+    return llm.generate(prompt)
+```
+
+#### **✅ DSPy Approach (Self-Improving)**
+
+```python
+import dspy
+
+class ContentClassifier(dspy.Signature):
+    """Classify content into predefined categories"""
+    text = dspy.InputField(desc="Content to classify")
+    reasoning = dspy.OutputField(desc="Step-by-step classification reasoning")
+    category = dspy.OutputField(desc="Final category: Technology, Business, Science, or Entertainment")
+
+class Classifier(dspy.Module):
+    def __init__(self):
+        self.classify = dspy.ChainOfThought(ContentClassifier)
+    
+    def forward(self, text):
+        return self.classify(text=text)
+
+# Train with your data - DSPy learns the best approach
+classifier = Classifier()
+teleprompter = dspy.MIPRO(metric=classification_accuracy)
+optimized_classifier = teleprompter.compile(classifier, trainset=labeled_data)
+
+# Result: 40%+ accuracy improvement over manual prompts!
+```
+
+### **🎯 Key Differences:**
+
+- **Traditional**: Manual tweaking, inconsistent results, no systematic improvement
+- **DSPy**: Automatic optimization, consistent performance, data-driven improvement
+
 ## 🚀 Quick Start
 
 ### 1. Install uv Package Manager
@@ -172,7 +270,7 @@ DSPy-Zero-to-Expert/
 ├── pyproject.toml                  # Project configuration
 ├── .env.template                   # Environment configuration template
 └── verify_installation.py          # Installation verification script
-``` 
+```
 
 ## 🤝 Contributing
 
