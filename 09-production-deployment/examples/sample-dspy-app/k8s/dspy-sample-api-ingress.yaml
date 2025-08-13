@@ -1,0 +1,27 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-redirect: 'true'
+  labels:
+    app: dspy-sample-api
+    environment: production
+  name: dspy-sample-api-ingress
+spec:
+  rules:
+  - host: dspy-api.example.com
+    http:
+      paths:
+      - backend:
+          service:
+            name: dspy-sample-api-service
+            port:
+              number: 80
+        path: /
+        pathType: Prefix
+  tls:
+  - hosts:
+    - dspy-api.example.com
+    secretName: dspy-sample-api-tls

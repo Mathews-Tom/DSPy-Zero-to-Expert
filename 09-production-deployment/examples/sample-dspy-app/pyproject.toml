@@ -1,0 +1,25 @@
+[project]
+name = "dspy-sample-api"
+version = "1.0.0"
+description = "Sample DSPy API for deployment demonstration"
+dependencies = [
+    "fastapi>=0.104.1",
+    "uvicorn[standard]>=0.24.0",
+    "dspy-ai>=2.4.9",
+    "psutil>=5.9.6",
+    "aiohttp>=3.9.1",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.uv]
+dev-dependencies = [
+    "pytest>=7.4.3",
+    "pytest-asyncio>=0.21.1",
+    "httpx>=0.25.2",
+    "ruff>=0.1.6",
+    "black>=23.11.0",
+    "mypy>=1.7.1",
+]
