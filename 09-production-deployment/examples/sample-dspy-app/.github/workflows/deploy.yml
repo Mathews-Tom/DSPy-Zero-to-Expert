@@ -1,0 +1,74 @@
+name: Deploy to Kubernetes
+
+on:
+  push:
+    branches: [ main, develop ]
+
+env:
+  REGISTRY: ghcr.io/your-org
+  IMAGE_NAME: dspy-sample-api
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        environment: [staging, production]
+        include:
+          - environment: staging
+            branch: develop
+            namespace: staging
+          - environment: production
+            branch: main
+            namespace: production
+    
+    if: github.ref == format('refs/heads/{0}', matrix.branch)
+    environment: ${{ matrix.environment }}
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up kubectl
+      uses: azure/setup-kubectl@v3
+      with:
+        version: 'latest'
+    
+    - name: Configure kubectl
+      run: |
+        echo "${{ secrets.KUBECONFIG }}" | base64 -d > kubeconfig
+        export KUBECONFIG=kubeconfig
+        kubectl config current-context
+    
+    - name: Deploy to Kubernetes
+      run: |
+        export KUBECONFIG=kubeconfig
+        
+        # Update image tag in deployment
+        sed -i 's|IMAGE_TAG|${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}|g' k8s/deployment.yaml
+        
+        # Apply manifests
+        kubectl apply -f k8s/ -n ${{ matrix.namespace }}
+        
+        # Wait for rollout
+        kubectl rollout status deployment/dspy-sample-api-deployment -n ${{ matrix.namespace }} --timeout=300s
+    
+    - name: Verify deployment
+      run: |
+        export KUBECONFIG=kubeconfig
+        
+        # Check pod status
+        kubectl get pods -n ${{ matrix.namespace }} -l app=dspy-sample-api
+        
+        # Check service endpoints
+        kubectl get endpoints -n ${{ matrix.namespace }} -l app=dspy-sample-api
+        
+        # Run health check
+        kubectl exec -n ${{ matrix.namespace }} deployment/dspy-sample-api-deployment -- curl -f http://localhost:8000/health
+    
+    - name: Rollback on failure
+      if: failure()
+      run: |
+        export KUBECONFIG=kubeconfig
+        kubectl rollout undo deployment/dspy-sample-api-deployment -n ${{ matrix.namespace }}
+        kubectl rollout status deployment/dspy-sample-api-deployment -n ${{ matrix.namespace }}

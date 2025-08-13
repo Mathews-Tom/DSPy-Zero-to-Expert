@@ -1,0 +1,5 @@
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+dspy-ai==2.4.9
+psutil==5.9.6
+aiohttp==3.9.1
